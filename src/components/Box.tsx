@@ -1,5 +1,6 @@
-import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface BoxProps {
   children: ReactNode;
@@ -8,11 +9,7 @@ interface BoxProps {
 
 const Box = ({ children, className }: BoxProps) => {
   return (
-    <div
-      className={cn(`h-fit w-full rounded-lg bg-neutral-900`, className)}
-    >
-      {children}
-    </div>
+    <div className={cn(`h-full w-full rounded-lg`, className)}>{children}</div>
   );
 };
 

@@ -1,14 +1,15 @@
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
-import { DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuGroup, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuShortcut, 
-  DropdownMenuTrigger 
-} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Button } from './ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger
+} from './ui/dropdown-menu';
 
 export function UserNav() {
   return (
@@ -53,5 +54,5 @@ export function UserNav() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

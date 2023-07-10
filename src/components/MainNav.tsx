@@ -1,16 +1,18 @@
-'use client'
+'use client';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { Gauge } from 'lucide-react'
+import MenuItem from './MenuItem';
+
+import { cn } from '@/lib/utils';
+import { Gauge } from 'lucide-react';
 
 interface MainNavProps {
-  className: string
+  className: string;
 }
 
-export function MainNav({className, ...props}: MainNavProps) {
+export function MainNav({ className, ...props }: MainNavProps) {
   const pathName = usePathname();
 
   const routes = useMemo(
@@ -23,7 +25,7 @@ export function MainNav({className, ...props}: MainNavProps) {
       },
       {
         icon: Gauge,
-        label: 'Search',
+        label: 'Upload',
         active: pathName === '/upload',
         href: '/upload'
       }
@@ -33,9 +35,12 @@ export function MainNav({className, ...props}: MainNavProps) {
 
   return (
     <nav
-      className={cn("flex items-center space-x-4 lg:space-x-6", className)}
+      className={cn('flex items-center space-x-4 lg:space-x-6', className)}
       {...props}
     >
+      {routes.map((item) => (
+        <MenuItem key={item.label} {...item} />
+      ))}
       <Link
         href="/uploadfiles"
         className="text-sm font-medium transition-colors hover:text-primary"
@@ -61,5 +66,5 @@ export function MainNav({className, ...props}: MainNavProps) {
         Settings
       </Link>
     </nav>
-  )
+  );
 }

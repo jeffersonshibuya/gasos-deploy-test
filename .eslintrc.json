@@ -9,10 +9,10 @@
         }
     },
     "extends": [
+        "next",
+        "plugin:@next/next/recommended",
         "eslint:recommended",
-        "plugin:react/recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:react-hooks/recommended",
         "plugin:prettier/recommended",
         "prettier"
     ],
@@ -23,15 +23,14 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react",
         "@typescript-eslint",
-        "react-hooks",
         "prettier",
         "eslint-plugin-import-helpers"
     ],
     "rules": {
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
+        "react/prop-types": "off",
         "prettier/prettier": "error",
         "react/react-in-jsx-scope": "off",
         "import-helpers/order-imports": [
