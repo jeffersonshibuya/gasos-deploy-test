@@ -3,6 +3,6 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": false
+    "source.fixAll": true
   }
 }

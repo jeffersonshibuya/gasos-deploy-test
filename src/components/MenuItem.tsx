@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 interface MenuItemProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   label: string;
   active?: boolean;

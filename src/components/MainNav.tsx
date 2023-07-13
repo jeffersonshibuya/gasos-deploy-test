@@ -1,12 +1,12 @@
 'use client';
-import Link from 'next/link';
+
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 
 import MenuItem from './MenuItem';
 
 import { cn } from '@/lib/utils';
-import { Gauge } from 'lucide-react';
+import { Gauge, ImagePlusIcon, LayoutList } from 'lucide-react';
 
 interface MainNavProps {
   className: string;
@@ -24,10 +24,16 @@ export function MainNav({ className, ...props }: MainNavProps) {
         href: '/'
       },
       {
-        icon: Gauge,
+        icon: ImagePlusIcon,
         label: 'Upload',
         active: pathName === '/upload',
         href: '/upload'
+      },
+      {
+        icon: LayoutList,
+        label: 'List',
+        active: pathName === '/list',
+        href: '/list'
       }
     ],
     [pathName]
@@ -41,30 +47,6 @@ export function MainNav({ className, ...props }: MainNavProps) {
       {routes.map((item) => (
         <MenuItem key={item.label} {...item} />
       ))}
-      <Link
-        href="/uploadfiles"
-        className="text-sm font-medium transition-colors hover:text-primary"
-      >
-        Overview
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Customers
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Products
-      </Link>
-      <Link
-        href="/examples/dashboard"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Settings
-      </Link>
     </nav>
   );
 }
