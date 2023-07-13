@@ -1,9 +1,13 @@
 import { api } from '@/services/api';
 
 export async function GetListFiles() {
-  const response = await api.post('/', {
-    action: 'list'
-  });
-
-  return response.data || [];
+  try {
+    const response = await api.post('/', {
+      action: 'list'
+    });
+    return response.data || [];
+  } catch (error: any) {
+    console.log(error);
+    throw new Error(error);
+  }
 }
