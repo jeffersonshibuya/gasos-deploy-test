@@ -5,7 +5,8 @@ export async function GetListFiles() {
     const response = await api.post('/', {
       action: 'list'
     });
-    return response.data || [];
+
+    return response.data.files || [];
   } catch (error: any) {
     console.log(error);
     throw new Error(error);

@@ -66,7 +66,7 @@ export default function ListFiles({ files }: ListFilesProps) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {files.map((file) => (
+                  {files?.map((file) => (
                     <tr key={file.name} className="divide-x divide-gray-200">
                       <td className="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-0">
                         <button onClick={() => previewImage(file.url)}>

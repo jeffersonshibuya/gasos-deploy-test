@@ -65,7 +65,7 @@ export default function DropzoneUpload() {
         headers: { 'Content-Type': file.type }
       });
 
-      if (response.status) {
+      if (response.status === 200) {
         changeFileStatus('success', file.name);
       } else {
         changeFileStatus('error', file.name);
