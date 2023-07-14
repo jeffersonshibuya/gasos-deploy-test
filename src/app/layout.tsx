@@ -5,6 +5,8 @@ import { Inter } from 'next/font/google';
 import { MainNav } from '@/components/MainNav';
 import { UserNav } from '@/components/UserNav';
 
+import ToasterProvider from '@/Providers/ToastProvider';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -20,13 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <ToasterProvider />
         <div className="flex-col md:flex">
           <div className="border-b">
             <div className="flex h-16 items-center px-4">
-              {/* <TeamSwitcher /> */}
               <MainNav className="mx-6" />
               <div className="ml-auto mr-4 flex items-center space-x-4">
-                {/* <Search /> */}
                 <UserNav />
               </div>
             </div>

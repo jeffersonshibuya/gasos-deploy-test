@@ -1,3 +1,5 @@
+import EmptyState from '@/components/EmptyState';
+
 import { FileData } from '@/types';
 import {
   CheckCheck,
@@ -19,21 +21,10 @@ export default function FilesList({
 }: FilesListProps) {
   if (files.length === 0) {
     return (
-      <div
-        className="mt-4 flex w-full items-center justify-center rounded 
-        border border-dashed border-gray-300 py-6 font-semibold
-        text-gray-500"
-      >
-        <p className="flex-col">
-          <span className="flex items-center gap-2">
-            <FileWarning size={18} />
-            No files yet! <br />
-          </span>
-          <span className="text-xs">
-            Please select the files or drag and drop
-          </span>
-        </p>
-      </div>
+      <EmptyState
+        title="No files yet!"
+        subtitle=" Please select the files or drag and drop"
+      />
     );
   }
 
@@ -51,12 +42,6 @@ export default function FilesList({
           justify-between py-3 pl-3 pr-4 text-sm"
           >
             <div className="flex w-0 flex-1 items-center">
-              {/* <Image
-                width={120}
-                height={90}
-                src={file.preview}
-                alt={'ballot-image'}
-              /> */}
               {file.status === 'loading' ? (
                 <Loader className="h-5 w-5 flex-shrink-0 animate-spin text-gray-400" />
               ) : file.status === 'waiting' ? (
@@ -82,8 +67,7 @@ export default function FilesList({
                 <Trash2
                   size={18}
                   aria-label="remove-file"
-                  className="cursor-pointer text-red-600 
-              hover:text-red-700"
+                  className="cursor-pointer text-red-600 hover:text-red-700"
                   onClick={() => removeFileFromList(file.name)}
                 />
               )}

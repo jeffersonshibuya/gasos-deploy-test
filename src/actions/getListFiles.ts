@@ -7,8 +7,9 @@ export async function GetListFiles() {
     });
 
     return response.data.files || [];
-  } catch (error: any) {
-    console.log(error);
-    throw new Error(error);
+  } catch (err) {
+    console.error('Error on fetching List Files', err);
+    throw err;
+    // throw new Error(JSON.stringify(err.message));
   }
 }

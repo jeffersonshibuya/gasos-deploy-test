@@ -2,12 +2,16 @@
 
 import { useState } from 'react';
 import Dropzone from 'react-dropzone';
+import { toast } from 'react-hot-toast';
+
+import { Button } from '@/components/ui/button';
 
 import FilesList from './FilesList';
 
 import { api } from '@/services/api';
 import { FileData } from '@/types';
 import axios from 'axios';
+import { FileUp } from 'lucide-react';
 
 export default function DropzoneUpload() {
   const [files, setFiles] = useState<FileData[]>([]);
@@ -67,6 +71,7 @@ export default function DropzoneUpload() {
 
       if (response.status === 200) {
         changeFileStatus('success', file.name);
+        toast.success(`${file.name} uploaded`);
       } else {
         changeFileStatus('error', file.name);
       }
@@ -132,7 +137,18 @@ export default function DropzoneUpload() {
 
       <FilesList files={files} removeFileFromList={removeFileFromList} />
 
-      <button onClick={handleUpload}>Upload Files</button>
+      {files.length !== 0 && (
+        <div className="mt-4 text-right">
+          <Button
+            variant="outline"
+            onClick={handleUpload}
+            className="text-indigo-600 transition duration-300 hover:bg-indigo-700 hover:text-white"
+          >
+            <FileUp className="mr-2 h-4 w-4" />
+            Upload Files
+          </Button>
+        </div>
+      )}
     </>
   );
 }
