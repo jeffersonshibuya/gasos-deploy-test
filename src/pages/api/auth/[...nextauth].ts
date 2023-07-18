@@ -12,11 +12,11 @@ export const authOptions: AuthOptions = {
       clientId: process.env.AWS_COGNITO_CLIENT_ID as string,
       clientSecret: process.env.AWS_COGNITO_CLIENT_SECRET as string,
       issuer: process.env.AWS_COGNITO_ISSUER as string
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
     })
+    // GoogleProvider({
+    //   clientId: process.env.GOOGLE_CLIENT_ID as string,
+    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
+    // })
     // CredentialsProvider({
     //   name: 'credentials',
     //   credentials: {
@@ -40,25 +40,25 @@ export const authOptions: AuthOptions = {
     //   }
     // })
   ],
-  callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      const firstName =
-        (profile?.given_name?.charAt(0).toUpperCase() || '') +
-        (profile?.given_name?.slice(1) || '');
+  // callbacks: {
+  //   async signIn({ user, account, profile, email, credentials }) {
+  //     const firstName =
+  //       (profile?.given_name?.charAt(0).toUpperCase() || '') +
+  //       (profile?.given_name?.slice(1) || '');
 
-      console.log(firstName);
-      user.name = firstName;
-      ' ' +
-        profile?.family_name?.charAt(0).toUpperCase() +
-        profile?.family_name?.slice(1);
+  //     console.log(firstName);
+  //     user.name = firstName;
+  //     ' ' +
+  //       profile?.family_name?.charAt(0).toUpperCase() +
+  //       profile?.family_name?.slice(1);
 
-      return true;
-    }
-  },
+  //     return true;
+  //   }
+  // },
   pages: {
     signIn: '/login'
   },
-  debug: process.env.NODE_ENV === 'development',
+  // debug: process.env.NODE_ENV === 'development',
   session: {
     strategy: 'jwt'
   },

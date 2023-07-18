@@ -25,7 +25,11 @@ export function UserNav({ currentUser }: UserNavProps) {
   return (
     <>
       {!currentUser ? (
-        <Button onClick={() => signIn()} variant={'outline'} className="gap-2">
+        <Button
+          onClick={() => signIn('cognito')}
+          variant={'outline'}
+          className="gap-2"
+        >
           LogIn
           <LogIn size={16} />
         </Button>

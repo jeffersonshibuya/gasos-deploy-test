@@ -22,8 +22,6 @@ export default async function RootLayout({
 }) {
   const currentUser = await getCurrentUser();
 
-  console.log(currentUser);
-
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -31,7 +29,7 @@ export default async function RootLayout({
         <div className="flex-col md:flex">
           <div className="border-b">
             <div className="flex h-16 items-center px-4">
-              <MainNav className="mx-6" />
+              <MainNav className="mx-6" currentUser={currentUser} />
               <div className="ml-auto mr-4 flex items-center space-x-4">
                 <UserNav currentUser={currentUser} />
               </div>

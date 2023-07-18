@@ -10,9 +10,14 @@ import { Gauge, ImagePlusIcon, LayoutList } from 'lucide-react';
 
 interface MainNavProps {
   className: string;
+  currentUser?: any | null;
 }
 
-export function MainNav({ className, ...props }: MainNavProps) {
+export function MainNav({
+  className,
+  currentUser = null,
+  ...props
+}: MainNavProps) {
   const pathName = usePathname();
 
   const routes = useMemo(
@@ -21,22 +26,25 @@ export function MainNav({ className, ...props }: MainNavProps) {
         icon: Gauge,
         label: 'Dashboard',
         active: pathName === '/',
-        href: '/'
+        href: '/',
+        show: true
       },
       {
         icon: ImagePlusIcon,
         label: 'Upload',
         active: pathName === '/upload',
-        href: '/upload'
+        href: '/upload',
+        show: !!currentUser
       },
       {
         icon: LayoutList,
         label: 'List',
         active: pathName === '/list',
-        href: '/list'
+        href: '/list',
+        show: !!currentUser
       }
     ],
-    [pathName]
+    [currentUser, pathName]
   );
 
   return (
@@ -44,9 +52,11 @@ export function MainNav({ className, ...props }: MainNavProps) {
       className={cn('flex items-center space-x-4 lg:space-x-6', className)}
       {...props}
     >
-      {routes.map((item) => (
-        <MenuItem key={item.label} {...item} />
-      ))}
+      {routes
+        .filter((item) => item.show === true)
+        .map((item) => (
+          <MenuItem key={item.label} {...item} />
+        ))}
     </nav>
   );
 }
