@@ -1,8 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { useState } from 'react';
 
 import EmptyState from '@/components/EmptyState';
 import Heading from '@/components/Heading';

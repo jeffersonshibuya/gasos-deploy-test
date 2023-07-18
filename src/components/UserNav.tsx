@@ -1,8 +1,6 @@
 'use client';
 
 import { signIn, signOut } from 'next-auth/react';
-import { cookies } from 'next/headers';
-import { toast } from 'react-hot-toast';
 
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
@@ -17,7 +15,6 @@ import {
   DropdownMenuTrigger
 } from './ui/dropdown-menu';
 
-import axios from 'axios';
 import { LogIn, LogOut, Settings, User, User2 } from 'lucide-react';
 
 interface UserNavProps {
@@ -25,21 +22,6 @@ interface UserNavProps {
 }
 
 export function UserNav({ currentUser }: UserNavProps) {
-  const login = async () => {
-    axios
-      .post('/api/login', {
-        Username: 'test@email.com',
-        Password: '123456'
-      })
-      .then((response) => {
-        console.log(response);
-        toast.success('User Logged In!');
-      })
-      .catch(() => {
-        toast.error('Something went wrong!');
-      });
-  };
-
   return (
     <>
       {!currentUser ? (

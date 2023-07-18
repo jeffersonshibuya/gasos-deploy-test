@@ -1,15 +1,12 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { signIn } from 'next-auth/react';
 import { Inter } from 'next/font/google';
 
 import { MainNav } from '@/components/MainNav';
-import { Button } from '@/components/ui/button';
 import { UserNav } from '@/components/UserNav';
 
 import getCurrentUser from '@/actions/getCurrentUser';
 import ToasterProvider from '@/Providers/ToastProvider';
-import { LogIn } from 'lucide-react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,6 +21,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const currentUser = await getCurrentUser();
+
+  console.log(currentUser);
 
   return (
     <html lang="en">

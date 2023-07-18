@@ -3,7 +3,6 @@ import EmptyState from '@/components/EmptyState';
 import { FileData } from '@/types';
 import {
   CheckCheck,
-  FileWarning,
   FileWarningIcon,
   Hourglass,
   Loader,

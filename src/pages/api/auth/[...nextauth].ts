@@ -1,9 +1,6 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 import CognitoProvider from 'next-auth/providers/cognito';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
-import { cookies } from 'next/headers';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -43,6 +40,21 @@ export const authOptions: AuthOptions = {
     //   }
     // })
   ],
+  callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      const firstName =
+        (profile?.given_name?.charAt(0).toUpperCase() || '') +
+        (profile?.given_name?.slice(1) || '');
+
+      console.log(firstName);
+      user.name = firstName;
+      ' ' +
+        profile?.family_name?.charAt(0).toUpperCase() +
+        profile?.family_name?.slice(1);
+
+      return true;
+    }
+  },
   pages: {
     signIn: '/login'
   },
