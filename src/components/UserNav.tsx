@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger
 } from './ui/dropdown-menu';
 
+import useLoginModal from '@/hooks/useLoginModal';
 import { LogIn, LogOut, Settings, User, User2 } from 'lucide-react';
 
 interface UserNavProps {
@@ -22,17 +23,25 @@ interface UserNavProps {
 }
 
 export function UserNav({ currentUser }: UserNavProps) {
+  const { onOpen } = useLoginModal();
+
   return (
     <>
       {!currentUser ? (
-        <Button
-          onClick={() => signIn('cognito')}
-          variant={'outline'}
-          className="gap-2"
-        >
-          LogIn
-          <LogIn size={16} />
-        </Button>
+        <>
+          <Button onClick={onOpen} variant={'outline'} className="gap-2">
+            Log in
+            <LogIn size={16} />
+          </Button>
+          {/* <Button
+            onClick={() => signIn('cognito')}
+            variant={'outline'}
+            className="gap-2"
+          >
+            LogIn
+            <LogIn size={16} />
+          </Button> */}
+        </>
       ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

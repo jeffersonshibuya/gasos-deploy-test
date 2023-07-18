@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import { MainNav } from '@/components/MainNav';
+import LoginModal from '@/components/modals/LoginModal';
 import { UserNav } from '@/components/UserNav';
 
 import getCurrentUser from '@/actions/getCurrentUser';
@@ -25,6 +26,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <LoginModal />
         <ToasterProvider />
         <div className="flex-col md:flex">
           <div className="border-b">
