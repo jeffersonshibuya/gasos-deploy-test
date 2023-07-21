@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn, signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
@@ -96,9 +96,7 @@ export function UserNav({ currentUser }: UserNavProps) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => signOut({ callbackUrl: '/api/signout' })}
-            >
+            <DropdownMenuItem onClick={() => signOut()}>
               Log out
               <DropdownMenuShortcut>
                 <LogOut size={16} />

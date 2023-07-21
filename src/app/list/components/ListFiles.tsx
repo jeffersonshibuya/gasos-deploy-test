@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 
 import PreviewDialog from './PreviewDialog';
 
-import { RefreshCcw, Search } from 'lucide-react';
+import { Download, RefreshCcw, Search } from 'lucide-react';
 
 interface ListFilesProps {
   files: {
@@ -82,6 +82,9 @@ export default function ListFiles({ files }: ListFilesProps) {
                         <button onClick={() => previewImage(file.url)}>
                           <Search size={18} />
                         </button>
+                        <a href={file.url} rel="noreferrer">
+                          <Download size={18} />
+                        </a>
                       </td>
                       <td className="whitespace-nowrap p-4 text-sm text-gray-500">
                         {file.name}

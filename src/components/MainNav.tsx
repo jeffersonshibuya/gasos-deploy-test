@@ -33,7 +33,7 @@ export function MainNav({
         icon: ImagePlusIcon,
         label: 'Upload',
         active: pathName === '/upload',
-        href: '/upload',
+        href: '/uploads',
         show: !!currentUser
       },
       {
