@@ -3,15 +3,6 @@
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import {
@@ -24,6 +15,7 @@ import {
 } from '@/components/ui/table';
 
 import { FileStatus, FileUploadProps } from '.';
+import FolderNameDialog from './folder-name-dialog';
 
 import useUploadFolderModal from '@/hooks/useUploadFolderModal';
 import { formatBytes } from '@/utils/format-bytes';
@@ -33,6 +25,9 @@ import {
   Ban,
   Check,
   Clock,
+  File,
+  Folder,
+  FolderEdit,
   Hourglass,
   Loader,
   Paperclip,
@@ -56,9 +51,10 @@ export function UploadTable({
   cancelUpload,
   handleChangeFolderName
 }: UploadTableProps) {
-  const [showEditInput, setShowEditInput] = useState(false);
-  const [tempFolderName, setTempFolderName] = useState('');
-  const [tempFileName, setTempFileName] = useState('');
+  const [showEditFolderName, setShowEditFolderName] = useState(false);
+
+  const [fileNameSelected, setFileNameSelected] = useState('');
+  const [folderNameSelected, setFolderNameSelected] = useState('');
 
   const loadStatusIcon = (fileStatus: FileStatus) => {
     switch (fileStatus) {
@@ -77,50 +73,32 @@ export function UploadTable({
     }
   };
 
-  const handleEditFolderName = (fileName: string) => {
-    setTempFileName(fileName);
-    setShowEditInput(true);
+  const handleEditFolderName = (fileName: string, folderName: string) => {
+    setFileNameSelected(fileName);
+    setFolderNameSelected(folderName);
+    setShowEditFolderName(true);
   };
 
-  const handleSaveFolder = () => {
-    handleChangeFolderName(tempFolderName, tempFileName);
-    setShowEditInput(false);
-    setTempFileName('');
-    setTempFolderName('');
+  const handleSaveFolder = (folderName: string) => {
+    if (fileNameSelected && folderName) {
+      handleChangeFolderName(folderName, fileNameSelected);
+    }
+    setShowEditFolderName(false);
+    setFileNameSelected('');
+  };
+
+  const toggleFolderNameDialog = () => {
+    setShowEditFolderName(!showEditFolderName);
   };
 
   return (
     <>
-      <Dialog
-        open={showEditInput}
-        onOpenChange={(value) => setShowEditInput(value)}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Change folder name</DialogTitle>
-            <DialogDescription>
-              This will change the folder name which the file will be uploaded.
-            </DialogDescription>
-            <div className="grid grid-cols-4 items-center gap-4 pt-4">
-              <Label htmlFor="name" className="text-right">
-                Folder Name
-              </Label>
-              <Input
-                id="name"
-                value={tempFolderName}
-                onChange={(e) => setTempFolderName(e.target.value)}
-                className="col-span-3"
-              />
-            </div>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => setShowEditInput(false)} variant={'outline'}>
-              Cancel
-            </Button>
-            <Button onClick={handleSaveFolder}>Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <FolderNameDialog
+        isOpen={showEditFolderName}
+        toogleShowFolderDialog={toggleFolderNameDialog}
+        handleSaveFolder={handleSaveFolder}
+        folderName={folderNameSelected}
+      />
 
       <div className="flex justify-end gap-2 py-4">
         <Button
@@ -168,16 +146,37 @@ export function UploadTable({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col items-start gap-1">
-                      File: {fileUpload.file.name}
-                      Folder: {fileUpload.folder}
-                      <Button
-                        onClick={() =>
-                          handleEditFolderName(fileUpload.file.name)
-                        }
-                      >
-                        Save
-                      </Button>
+                    <div className="flex flex-col items-start gap-1.5 text-zinc-800">
+                      <p className="flex items-center gap-1">
+                        <File className="h-4 w-4 text-indigo-500" />
+                        {fileUpload.file.name}
+                      </p>
+                      <p className="flex items-center gap-1">
+                        <Folder className="h-4 w-4 text-green-500" />
+                        {fileUpload.folder}
+                        <FolderEdit
+                          className="h-4 w-4 cursor-pointer transition hover:text-blue-600"
+                          onClick={() =>
+                            handleEditFolderName(
+                              fileUpload.file.name,
+                              fileUpload.folder
+                            )
+                          }
+                        />
+                        {/* <Button
+                          variant={'outline'}
+                          size={'icon'}
+                          className="h-6 w-6 text-indigo-400"
+                          onClick={() =>
+                            handleEditFolderName(
+                              fileUpload.file.name,
+                              fileUpload.folder
+                            )
+                          }
+                        >
+                           
+                        </Button>*/}
+                      </p>
                     </div>
                   </TableCell>
                   <TableCell>

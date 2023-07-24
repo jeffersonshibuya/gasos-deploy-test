@@ -32,12 +32,12 @@ const controller = new AbortController();
 export default function UploadsList() {
   const [uploads, setUploads] = useState<FileUploadProps[]>([]);
 
-  const handleGetPresignedUrl = async (file: File) => {
+  const handleGetPresignedUrl = async (fileUpload: FileUploadProps) => {
     const response = await axios.post<{ signedUrl: string }>(
       '/api/upload-files',
       {
-        fileName: file.name,
-        fileType: file.type
+        fileName: fileUpload.folder + '/' + fileUpload.file.name,
+        fileType: fileUpload.file.type
       }
     );
 
@@ -51,7 +51,7 @@ export default function UploadsList() {
 
       try {
         for (const fileUpload of uploads) {
-          const signedUrl = await handleGetPresignedUrl(fileUpload.file);
+          const signedUrl = await handleGetPresignedUrl(fileUpload);
 
           const responsePromise = axios
             .put(signedUrl, fileUpload.file, {
