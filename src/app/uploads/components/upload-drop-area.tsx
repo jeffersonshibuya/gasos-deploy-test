@@ -54,7 +54,7 @@ export default function UploadDropArea({
                 <p className="pl-1">or drag and drop</p>
               </div>
               <p className="text-xs text-gray-500">
-                Ballot Images in <strong> jpge or tiff </strong> format
+                Ballot Images in <strong> .zip </strong> format
               </p>
             </div>
           </div>

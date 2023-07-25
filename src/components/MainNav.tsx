@@ -37,6 +37,13 @@ export function MainNav({
         show: !!currentUser
       },
       {
+        icon: ImagePlusIcon,
+        label: 'Upload - Conversion',
+        active: pathName === '/upload',
+        href: '/upload',
+        show: !!currentUser
+      },
+      {
         icon: LayoutList,
         label: 'List',
         active: pathName === '/list',

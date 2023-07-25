@@ -4,12 +4,8 @@ import axios from 'axios';
 
 export async function GetListFiles() {
   try {
-    // const response = await api.post('/', {
-    //   action: 'list'
-    // });
-
     const response = await axios.post<{ files: Array<FilesResponseData> }>(
-      '/api/list-files'
+      `${process.env.NEXTAUTH_URL}/api/list-files`
     );
 
     return response.data.files || [];
