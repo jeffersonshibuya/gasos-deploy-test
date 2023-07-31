@@ -13,4 +13,11 @@ export interface FilesResponseData {
   url: string;
   modified_at: string;
   size: number;
+  isFile?: boolean;
+}
+
+export interface FilesResponseDataGrouped {
+  folder: 'folder-testing-2';
+  isFile?: boolean;
+  files: FilesResponseData[];
 }

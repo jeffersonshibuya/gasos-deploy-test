@@ -1,4 +1,3 @@
-import { api } from '@/services/api';
 import { FilesResponseData } from '@/types';
 import axios from 'axios';
 

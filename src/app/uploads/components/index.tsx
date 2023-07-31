@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FileRejection } from 'react-dropzone';
 import { toast } from 'react-hot-toast';
@@ -30,6 +31,8 @@ export type FileUploadProps = {
 const controller = new AbortController();
 
 export default function UploadsList() {
+  const router = useRouter();
+
   const [uploads, setUploads] = useState<FileUploadProps[]>([]);
 
   const handleGetPresignedUrl = async (fileUpload: FileUploadProps) => {
@@ -115,6 +118,8 @@ export default function UploadsList() {
 
         // All uploads completed successfully
         // toast.success('Upload successful');
+        router.refresh();
+        router.push('/list');
       } catch (error) {
         console.error('Upload failed', error);
       }

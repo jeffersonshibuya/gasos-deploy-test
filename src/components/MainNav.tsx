@@ -30,6 +30,13 @@ export function MainNav({
         show: true
       },
       {
+        icon: LayoutList,
+        label: 'List',
+        active: pathName === '/list',
+        href: '/list',
+        show: true
+      },
+      {
         icon: ImagePlusIcon,
         label: 'Upload',
         active: pathName === '/upload',
@@ -38,16 +45,16 @@ export function MainNav({
       },
       {
         icon: ImagePlusIcon,
-        label: 'Upload - Conversion',
-        active: pathName === '/upload',
-        href: '/upload',
+        label: 'Upload - Compression',
+        active: pathName === '/compress-upload',
+        href: '/compress-upload',
         show: !!currentUser
       },
       {
-        icon: LayoutList,
-        label: 'List',
-        active: pathName === '/list',
-        href: '/list',
+        icon: ImagePlusIcon,
+        label: 'Upload - Conversion',
+        active: pathName === '/upload',
+        href: '/upload',
         show: !!currentUser
       }
     ],

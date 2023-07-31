@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { toast } from 'react-hot-toast';
@@ -14,6 +15,8 @@ import axios from 'axios';
 import { FileUp } from 'lucide-react';
 
 export default function DropzoneUpload() {
+  const router = useRouter();
+
   const [files, setFiles] = useState<FileData[]>([]);
 
   async function onDrop(acceptedFiles: File[]) {
@@ -79,6 +82,10 @@ export default function DropzoneUpload() {
 
     const pendingFiles = files.filter((file) => file.status !== 'success');
     setFiles(pendingFiles);
+    if (pendingFiles.length === 0) {
+      router.refresh();
+      router.push('/list');
+    }
   };
 
   function changeFileStatus(status: string, fileName: string) {
