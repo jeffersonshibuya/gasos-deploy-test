@@ -38,7 +38,7 @@ export function MainNav({
       },
       {
         icon: ImagePlusIcon,
-        label: 'Upload',
+        label: 'Upload - .zip',
         active: pathName === '/upload',
         href: '/uploads',
         show: !!currentUser

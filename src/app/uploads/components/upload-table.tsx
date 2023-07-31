@@ -31,6 +31,7 @@ import {
   Hourglass,
   Loader,
   Paperclip,
+  Pencil,
   Trash,
   Upload,
   X
@@ -59,17 +60,17 @@ export function UploadTable({
   const loadStatusIcon = (fileStatus: FileStatus) => {
     switch (fileStatus) {
       case 'completed':
-        return <Check className="text-green-600" />;
+        return <Check className="text-green-600" size={32} />;
       case 'canceled':
-        return <Ban />;
+        return <Ban size={32} />;
       case 'loading':
-        return <Loader className="animate-spin" />;
+        return <Loader className="animate-spin" size={32} />;
       case 'error':
-        return <X className="animate-spin" />;
+        return <X className="animate-spin" size={32} />;
       case 'pending':
-        return <Hourglass />;
+        return <Hourglass size={32} />;
       default:
-        return <Paperclip />;
+        return <Paperclip size={32} />;
     }
   };
 
@@ -126,9 +127,9 @@ export function UploadTable({
           <TableHeader>
             <TableRow>
               <TableHead style={{ width: 60 }}></TableHead>
-              <TableHead style={{ width: 340 }}>Title</TableHead>
-              <TableHead style={{ width: 'auto' }}>File</TableHead>
-              <TableHead style={{ minWidth: 140 }}>Upload</TableHead>
+              <TableHead style={{ width: 400 }}>Info</TableHead>
+              <TableHead style={{ width: 'auto' }}>File Data</TableHead>
+              <TableHead style={{ minWidth: 160 }}>Upload Progress</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -146,49 +147,42 @@ export function UploadTable({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col items-start gap-1.5 text-zinc-800">
+                    <div className="flex flex-col items-start gap-1.5 text-lg text-muted-foreground">
                       <p className="flex items-center gap-1">
-                        <File className="h-4 w-4 text-indigo-500" />
+                        <File className="h-6 w-6 text-indigo-500" />
                         {fileUpload.file.name}
                       </p>
                       <p className="flex items-center gap-1">
-                        <Folder className="h-4 w-4 text-green-500" />
+                        <Folder className="h-6 w-6 text-green-500" />
                         {fileUpload.folder}
-                        <FolderEdit
-                          className="h-4 w-4 cursor-pointer transition hover:text-blue-600"
-                          onClick={() =>
-                            handleEditFolderName(
-                              fileUpload.file.name,
-                              fileUpload.folder
-                            )
-                          }
-                        />
-                        {/* <Button
+                        <Button
                           variant={'outline'}
-                          size={'icon'}
-                          className="h-6 w-6 text-indigo-400"
-                          onClick={() =>
-                            handleEditFolderName(
-                              fileUpload.file.name,
-                              fileUpload.folder
-                            )
-                          }
+                          size={'default'}
+                          className="px-3 py-0.5 text-blue-700 hover:bg-blue-300 hover:text-white"
                         >
-                           
-                        </Button>*/}
+                          <Pencil
+                            className="h-5 w-5"
+                            onClick={() =>
+                              handleEditFolderName(
+                                fileUpload.file.name,
+                                fileUpload.folder
+                              )
+                            }
+                          />
+                        </Button>
                       </p>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-1 text-xs text-muted-foreground">
+                    <div className="flex flex-col gap-1 text-lg text-muted-foreground">
                       <span className="truncate">{fileUpload.file.name}</span>
-                      <span className="flex gap-2 font-medium">
+                      <span className="flex gap-2 text-sm font-medium">
                         {formatBytes(fileUpload.sizeLoaded || 0)} of{' '}
                         {formatBytes(fileUpload.file.size)} |{' '}
                         {fileUpload.timeRamaining ? (
                           formatSecondsToMinutes(fileUpload.timeRamaining)
                         ) : (
-                          <Clock size={13} />
+                          <Clock size={18} />
                         )}
                       </span>
                     </div>
@@ -205,7 +199,7 @@ export function UploadTable({
                           value={fileUpload.uploadProgress || 0}
                           className="transition-all"
                         />
-                        <span className="text-xs font-semibold text-green-700">
+                        <span className="text-md font-semibold text-green-700">
                           {Math.round(fileUpload.uploadProgress || 0)}%
                         </span>
                       </div>

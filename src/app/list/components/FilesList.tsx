@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import EmptyState from '@/components/EmptyState';
 import Heading from '@/components/Heading';
 import { Button } from '@/components/ui/button';
 
@@ -69,6 +70,10 @@ export default function FilesList({ files }: FilesListProps) {
     const resultList = groupAndConcatByFolder(files);
     setFilesData(resultList);
   }, [files]);
+
+  if (filesData.length === 0) {
+    return <EmptyState title="No files yet!" subtitle="No files uploaded" />;
+  }
 
   return (
     <>
