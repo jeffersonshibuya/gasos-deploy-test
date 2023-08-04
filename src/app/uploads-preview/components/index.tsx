@@ -9,10 +9,13 @@ import Loader from '@/components/Loader';
 
 import FolderPreviewCard from './folder-preview-card';
 import UploadDropArea from './upload-drop-area';
+import UploadForm from './upload-form';
 import { UploadTable } from './upload-table';
 
 import { FilePreviewData } from '@/types';
+import { fadeIn, itemVariants } from '@/utils/animation';
 import axios, { AxiosResponse } from 'axios';
+import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 
 export type FileStatus =
@@ -252,13 +255,25 @@ export default function UploadsList() {
   return (
     <>
       <UploadDropArea handleDropFiles={handleDropFiles} />
-      <UploadTable
-        uploads={uploads}
-        handleUpload={handleUpload}
-        handleRemoveFile={handleRemoveFile}
-        cancelUpload={cancelUpload}
-        handleChangeFolderName={handleChangeFolderName}
-      />
+
+      <UploadForm />
+
+      {uploads.length > 0 && (
+        <motion.div variants={fadeIn} initial="hidden" animate="show">
+          <motion.div variants={itemVariants} className="my-4">
+            <UploadForm />
+          </motion.div>
+          <motion.div variants={itemVariants} className="my-4">
+            <UploadTable
+              uploads={uploads}
+              handleUpload={handleUpload}
+              handleRemoveFile={handleRemoveFile}
+              cancelUpload={cancelUpload}
+              handleChangeFolderName={handleChangeFolderName}
+            />
+          </motion.div>
+        </motion.div>
+      )}
 
       {showErrorFolder && (
         <div className="my-2 rounded-md bg-red-50 p-4">
