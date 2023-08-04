@@ -21,3 +21,16 @@ export interface FilesResponseDataGrouped {
   isFile?: boolean;
   files: FilesResponseData[];
 }
+
+// export interface FilePreviewData {
+//   folder: string;
+//   value: {
+//     files: {
+//       filename: string;
+//     }[];
+//   };
+// }
+export interface FilePreviewData {
+  folder: string;
+  files: string | FilePreviewData[];
+}

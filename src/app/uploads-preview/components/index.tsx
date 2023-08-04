@@ -5,10 +5,15 @@ import { useState } from 'react';
 import { FileRejection } from 'react-dropzone';
 import { toast } from 'react-hot-toast';
 
+import Loader from '@/components/Loader';
+
+import FolderPreviewCard from './folder-preview-card';
 import UploadDropArea from './upload-drop-area';
 import { UploadTable } from './upload-table';
 
+import { FilePreviewData } from '@/types';
 import axios, { AxiosResponse } from 'axios';
+import { X } from 'lucide-react';
 
 export type FileStatus =
   | 'pending'
@@ -32,6 +37,9 @@ export default function UploadsList() {
   const router = useRouter();
 
   const [uploads, setUploads] = useState<FileUploadProps[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showErrorFolder, setShowErrorFolder] = useState(false);
+  const [filesPreview, setFilesPreview] = useState<FilePreviewData[]>([]);
 
   const handleGetPresignedUrl = async (fileUpload: FileUploadProps) => {
     const response = await axios.post<{ signedUrl: string }>(
@@ -137,6 +145,16 @@ export default function UploadsList() {
         return;
       }
 
+      setUploads([]);
+      setShowErrorFolder(false);
+
+      const formData = new FormData();
+      formData.append('file', file);
+      setIsLoading(true);
+      const zipFiles = await axios.post('/api/files-zip', formData);
+      setIsLoading(false);
+      setFilesPreview(zipFiles.data);
+
       setUploads((prevState) => {
         const uploadFiles = [...prevState];
         const newFile: FileUploadProps = {
@@ -193,6 +211,8 @@ export default function UploadsList() {
     const uploadsFilter = uploads.filter((u) => u.file.name !== fileName);
 
     setUploads(uploadsFilter);
+    setFilesPreview([]);
+    setShowErrorFolder(false);
   };
 
   const handleChangeFolderName = (folderName: string, fileName: string) => {
@@ -209,6 +229,26 @@ export default function UploadsList() {
     controller.abort();
   };
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  const isFolderValid = (folderData: FilePreviewData): boolean => {
+    let isValid = true;
+    for (const item of folderData.files) {
+      if (
+        typeof item === 'object' &&
+        Array.isArray(item.files) &&
+        item.files.length > 0
+      ) {
+        isValid = false;
+      }
+    }
+
+    if (!isValid) setShowErrorFolder(true);
+    return isValid;
+  };
+
   return (
     <>
       <UploadDropArea handleDropFiles={handleDropFiles} />
@@ -219,6 +259,41 @@ export default function UploadsList() {
         cancelUpload={cancelUpload}
         handleChangeFolderName={handleChangeFolderName}
       />
+
+      {showErrorFolder && (
+        <div className="my-2 rounded-md bg-red-50 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <X className="h-5 w-5 text-red-400" aria-hidden="true" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Please make sure that the folder follows the rules:
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <ul role="list" className="list-disc space-y-1 pl-5">
+                  <li>
+                    Inside each compressed county folder is 1 subfolder for
+                    every precinct within the county{' '}
+                  </li>
+                  <li>Subfolders are not allowed</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="my-5 grid grid-cols-5 gap-2">
+        {filesPreview.map((folderData) => (
+          <div key={folderData.folder}>
+            <FolderPreviewCard
+              folderData={folderData}
+              isFolderValid={isFolderValid}
+            />
+          </div>
+        ))}
+      </div>
     </>
   );
 }

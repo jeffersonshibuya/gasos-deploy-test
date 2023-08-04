@@ -56,6 +56,13 @@ export function MainNav({
         active: pathName === '/upload',
         href: '/upload',
         show: !!currentUser
+      },
+      {
+        icon: ImagePlusIcon,
+        label: 'Upload - Preview',
+        active: pathName === '/uploads-preview',
+        href: '/uploads-preview',
+        show: !!currentUser
       }
     ],
     [currentUser, pathName]
