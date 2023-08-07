@@ -41,7 +41,7 @@ export default function FolderPreviewCard({
       <CardFooter className="bg-gray-50">
         {isValid ? (
           <div className="text-sm text-blue-800">
-            <strong>{folderData.files.length - 1}</strong> Files
+            <strong>{folderData.files.length}</strong> Files
           </div>
         ) : (
           <div className="flex items-center gap-2 text-sm text-red-400">

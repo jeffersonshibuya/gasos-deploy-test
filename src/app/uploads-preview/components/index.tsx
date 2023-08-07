@@ -43,12 +43,16 @@ export default function UploadsList() {
   const [isLoading, setIsLoading] = useState(false);
   const [showErrorFolder, setShowErrorFolder] = useState(false);
   const [filesPreview, setFilesPreview] = useState<FilePreviewData[]>([]);
+  const [abortController, setAbortController] = useState(new AbortController());
 
-  const handleGetPresignedUrl = async (fileUpload: FileUploadProps) => {
+  const handleGetPresignedUrl = async (
+    fileUpload: FileUploadProps,
+    folder: string
+  ) => {
     const response = await axios.post<{ signedUrl: string }>(
       '/api/upload-files',
       {
-        fileName: fileUpload.folder + '/' + fileUpload.file.name,
+        fileName: folder + '/' + fileUpload.file.name,
         fileType: fileUpload.file.type
       }
     );
@@ -56,18 +60,21 @@ export default function UploadsList() {
     return response.data.signedUrl || '';
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (folder: string) => {
+    if (abortController.signal.aborted) {
+      setAbortController(new AbortController());
+    }
     if (uploads.length > 0) {
       const responsePromises: Promise<AxiosResponse | null>[] = [];
       const startAt = Date.now();
 
       try {
         for (const fileUpload of uploads) {
-          const signedUrl = await handleGetPresignedUrl(fileUpload);
+          const signedUrl = await handleGetPresignedUrl(fileUpload, folder);
 
           const responsePromise = axios
             .put(signedUrl, fileUpload.file, {
-              signal: controller.signal,
+              signal: abortController.signal,
               onUploadProgress: (progressEvent) => {
                 const loaded = progressEvent.loaded;
                 const total = progressEvent.total || 100;
@@ -127,8 +134,11 @@ export default function UploadsList() {
 
         // All uploads completed successfully
         // toast.success('Upload successful');
-        router.refresh();
-        router.push('/list');
+
+        if (!abortController.signal.aborted) {
+          router.refresh();
+          router.push('/list');
+        }
       } catch (error) {
         console.error('Upload failed', error);
       }
@@ -229,12 +239,8 @@ export default function UploadsList() {
   };
 
   const cancelUpload = () => {
-    controller.abort();
+    abortController.abort();
   };
-
-  if (isLoading) {
-    return <Loader />;
-  }
 
   const isFolderValid = (folderData: FilePreviewData): boolean => {
     let isValid = true;
@@ -252,63 +258,69 @@ export default function UploadsList() {
     return isValid;
   };
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <>
       <UploadDropArea handleDropFiles={handleDropFiles} />
 
-      <UploadForm />
-
       {uploads.length > 0 && (
         <motion.div variants={fadeIn} initial="hidden" animate="show">
           <motion.div variants={itemVariants} className="my-4">
-            <UploadForm />
+            {showErrorFolder ? (
+              <div className="my-2 rounded-md bg-red-50 p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <X className="h-5 w-5 text-red-400" aria-hidden="true" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800">
+                      Please make sure that the folder follows the rules:
+                    </h3>
+                    <div className="mt-2 text-sm text-red-700">
+                      <ul role="list" className="list-disc space-y-1 pl-5">
+                        <li>
+                          Inside each compressed county folder is 1 subfolder
+                          for every precinct within the county{' '}
+                        </li>
+                        <li>Subfolders are not allowed</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <UploadForm
+                handleUpload={handleUpload}
+                isFolderError={showErrorFolder}
+                cancelUpload={cancelUpload}
+              />
+            )}
           </motion.div>
           <motion.div variants={itemVariants} className="my-4">
             <UploadTable
               uploads={uploads}
-              handleUpload={handleUpload}
               handleRemoveFile={handleRemoveFile}
-              cancelUpload={cancelUpload}
               handleChangeFolderName={handleChangeFolderName}
             />
           </motion.div>
+          <motion.div
+            variants={itemVariants}
+            className="my-5 grid grid-cols-5 gap-2"
+          >
+            {filesPreview.map((folderData) => (
+              <div key={folderData.folder}>
+                <FolderPreviewCard
+                  folderData={folderData}
+                  isFolderValid={isFolderValid}
+                />
+              </div>
+            ))}
+          </motion.div>
         </motion.div>
       )}
-
-      {showErrorFolder && (
-        <div className="my-2 rounded-md bg-red-50 p-4">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <X className="h-5 w-5 text-red-400" aria-hidden="true" />
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">
-                Please make sure that the folder follows the rules:
-              </h3>
-              <div className="mt-2 text-sm text-red-700">
-                <ul role="list" className="list-disc space-y-1 pl-5">
-                  <li>
-                    Inside each compressed county folder is 1 subfolder for
-                    every precinct within the county{' '}
-                  </li>
-                  <li>Subfolders are not allowed</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="my-5 grid grid-cols-5 gap-2">
-        {filesPreview.map((folderData) => (
-          <div key={folderData.folder}>
-            <FolderPreviewCard
-              folderData={folderData}
-              isFolderValid={isFolderValid}
-            />
-          </div>
-        ))}
-      </div>
     </>
   );
 }

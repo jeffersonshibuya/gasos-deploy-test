@@ -39,17 +39,14 @@ import {
 
 interface UploadTableProps {
   uploads: FileUploadProps[];
-  handleUpload: () => void;
+  // handleUpload: () => void;
   handleRemoveFile: (fileName: string) => void;
-  cancelUpload: () => void;
   handleChangeFolderName: (folderName: string, fileName: string) => void;
 }
 
 export function UploadTable({
   uploads,
-  handleUpload,
   handleRemoveFile,
-  cancelUpload,
   handleChangeFolderName
 }: UploadTableProps) {
   const [showEditFolderName, setShowEditFolderName] = useState(false);
@@ -100,27 +97,6 @@ export function UploadTable({
         handleSaveFolder={handleSaveFolder}
         folderName={folderNameSelected}
       />
-
-      <div className="flex justify-end gap-2 py-4">
-        <Button
-          className="gap-1"
-          disabled={uploads.length === 0}
-          variant="outline"
-          onClick={handleUpload}
-        >
-          <Upload size={16} />
-          Upload
-        </Button>
-        <Button
-          className="gap-1"
-          variant={'destructive'}
-          onClick={cancelUpload}
-          disabled={uploads.length === 0}
-        >
-          <X size={16} />
-          Abort
-        </Button>
-      </div>
 
       <div className="rounded-md border">
         <Table>

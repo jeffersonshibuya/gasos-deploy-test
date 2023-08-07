@@ -34,3 +34,8 @@ export interface FilePreviewData {
   folder: string;
   files: string | FilePreviewData[];
 }
+
+export interface SelectionDefaultType {
+  label: string;
+  value: string;
+}
