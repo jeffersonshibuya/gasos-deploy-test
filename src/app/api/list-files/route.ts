@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 
-import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  ListObjectsV2Command,
+  GetObjectTaggingCommand
+} from '@aws-sdk/client-s3';
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -19,19 +23,46 @@ export async function POST() {
     const command = new ListObjectsV2Command(input);
     const s3Response = await s3Client.send(command);
 
-    const files =
-      s3Response.Contents?.map((content: any) => {
-        const fileName = content.Key.split('/').pop();
-        return {
-          key: content.Key,
-          name: fileName,
-          url:
-            `https://${process.env.AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/` +
-            content.Key,
-          modified_at: content.LastModified,
-          size: content.Size
-        };
-      }) || [];
+    const files = [];
+    for (const object of s3Response.Contents || []) {
+      const fileName = object?.Key?.split('/').pop();
+
+      // Getting tags
+      const inputTagging = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: object.Key
+      };
+      const command = new GetObjectTaggingCommand(inputTagging);
+      const response = await s3Client.send(command);
+      const status =
+        response.TagSet?.filter((tag) => tag.Key === 'status')[0].Value || '';
+
+      files.push({
+        key: object.Key,
+        name: fileName,
+        url:
+          `https://${process.env.AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/` +
+          object.Key,
+        modified_at: object.LastModified,
+        size: object.Size,
+        status
+      });
+    }
+
+    // const files =
+    //   s3Response.Contents?.map((content: any) => {
+    //     const fileName = content.Key.split('/').pop();
+
+    //     return {
+    //       key: content.Key,
+    //       name: fileName,
+    //       url:
+    //         `https://${process.env.AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/` +
+    //         content.Key,
+    //       modified_at: content.LastModified,
+    //       size: content.Size
+    //     };
+    //   }) || [];
 
     return NextResponse.json({ files });
   } catch (error) {

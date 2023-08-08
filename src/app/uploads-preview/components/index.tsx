@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -33,8 +34,6 @@ export type FileUploadProps = {
   status: FileStatus;
   folder: string;
 };
-
-const controller = new AbortController();
 
 export default function UploadsList() {
   const router = useRouter();
@@ -131,6 +130,11 @@ export default function UploadsList() {
         }
 
         await Promise.all(responsePromises);
+
+        // Set status tagging to the file
+        await axios.put('/api/upload-files', {
+          fileName: `${folder}/${uploads[0].file.name}`
+        });
 
         // All uploads completed successfully
         // toast.success('Upload successful');

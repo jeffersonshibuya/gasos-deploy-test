@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -7,17 +8,22 @@ import EmptyState from '@/components/EmptyState';
 import Heading from '@/components/Heading';
 import { Button } from '@/components/ui/button';
 
+import SelectStatus from './SelectStatus';
+
 import { FilesResponseData, FilesResponseDataGrouped } from '@/types';
 import { formatBytes } from '@/utils/format-bytes';
+import axios from 'axios';
 import { CornerDownRight, File, Folder, RefreshCcw } from 'lucide-react';
 
 interface FilesListProps {
   files: FilesResponseData[];
 }
 
-export default function FilesList({ files }: FilesListProps) {
+export default function FilesListApproval({ files }: FilesListProps) {
   const router = useRouter();
   const [filesData, setFilesData] = useState<FilesResponseDataGrouped[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false);
 
   function groupAndConcatByFolder(
     arr: FilesResponseData[]
@@ -66,6 +72,16 @@ export default function FilesList({ files }: FilesListProps) {
     URL.revokeObjectURL(url);
   };
 
+  const approveFile = async (folderName: string, fileName: string) => {
+    setIsLoading(true);
+    await axios.post('/api/approve', {
+      folderName,
+      fileName
+    });
+    setIsLoading(false);
+    router.refresh();
+  };
+
   useEffect(() => {
     const resultList = groupAndConcatByFolder(files);
     setFilesData(resultList);
@@ -79,6 +95,7 @@ export default function FilesList({ files }: FilesListProps) {
     <>
       <div className="flex items-center justify-between">
         <Heading title="Files Uploaded" />
+        <SelectStatus />
         <Button
           variant="outline"
           onClick={() => router.refresh()}
@@ -108,6 +125,20 @@ export default function FilesList({ files }: FilesListProps) {
                             <p className="flex items-center gap-2 text-sm font-semibold leading-6 text-gray-600">
                               <File size={16} />
                               {file.name}
+                              <svg
+                                viewBox="0 0 2 2"
+                                className="h-0.5 w-0.5 fill-current"
+                              >
+                                <circle cx={1} cy={1} r={1} />
+                              </svg>
+                              <p
+                                className={` truncate capitalize ${file.status === 'approved' && 'text-green-500'
+                                  } ${file.status === 'waiting-approval' &&
+                                  'text-indigo-500'
+                                  } `}
+                              >
+                                {file.status}
+                              </p>
                             </p>
                           </div>
                           <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
@@ -134,25 +165,28 @@ export default function FilesList({ files }: FilesListProps) {
                             <p className="truncate">
                               Size: {formatBytes(file.size)}
                             </p>
-                            <svg
-                              viewBox="0 0 2 2"
-                              className="h-0.5 w-0.5 fill-current"
-                            >
-                              <circle cx={1} cy={1} r={1} />
-                            </svg>
-                            <p className="truncate">
-                              Status: {file.status || '-'}
-                            </p>
                           </div>
                         </div>
-                        <div className="">
+                        <div className="flex items-center gap-2">
                           <a
                             href={file.url}
-                            className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
+                            className="rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
                           >
                             Download
                             <span className="sr-only">, {file.name}</span>
                           </a>
+                          {file.status === 'waiting-approval' && (
+                            <Button
+                              onClick={() =>
+                                approveFile(fileData.folder, file.name)
+                              }
+                              disabled={isLoading}
+                              className="bg-indigo-500 hover:bg-indigo-600"
+                            >
+                              {isLoading ? 'Processing...' : 'Approve'}
+                              <span className="sr-only">, {file.name}</span>
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </li>

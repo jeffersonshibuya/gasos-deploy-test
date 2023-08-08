@@ -31,32 +31,39 @@ export function MainNav({
       },
       {
         icon: LayoutList,
-        label: 'List',
+        label: 'List - County',
         active: pathName === '/list',
         href: '/list',
         show: true
       },
       {
-        icon: ImagePlusIcon,
-        label: 'Upload - .zip',
-        active: pathName === '/upload',
-        href: '/uploads',
-        show: !!currentUser
+        icon: LayoutList,
+        label: 'List - GA SOS',
+        active: pathName === '/list-approval',
+        href: '/list-approval',
+        show: true
       },
-      {
-        icon: ImagePlusIcon,
-        label: 'Upload - Compression',
-        active: pathName === '/compress-upload',
-        href: '/compress-upload',
-        show: !!currentUser
-      },
-      {
-        icon: ImagePlusIcon,
-        label: 'Upload - Conversion',
-        active: pathName === '/upload',
-        href: '/upload',
-        show: !!currentUser
-      },
+      // {
+      //   icon: ImagePlusIcon,
+      //   label: 'Upload - .zip',
+      //   active: pathName === '/upload',
+      //   href: '/uploads',
+      //   show: !!currentUser
+      // },
+      // {
+      //   icon: ImagePlusIcon,
+      //   label: 'Upload - Compression',
+      //   active: pathName === '/compress-upload',
+      //   href: '/compress-upload',
+      //   show: !!currentUser
+      // },
+      // {
+      //   icon: ImagePlusIcon,
+      //   label: 'Upload - Conversion',
+      //   active: pathName === '/upload',
+      //   href: '/upload',
+      //   show: !!currentUser
+      // },
       {
         icon: ImagePlusIcon,
         label: 'Upload - Preview',

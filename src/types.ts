@@ -14,6 +14,7 @@ export interface FilesResponseData {
   modified_at: string;
   size: number;
   isFile?: boolean;
+  status?: string;
 }
 
 export interface FilesResponseDataGrouped {

@@ -103,9 +103,9 @@ export function UploadTable({
           <TableHeader>
             <TableRow>
               <TableHead style={{ width: 60 }}></TableHead>
-              <TableHead style={{ width: 400 }}>Info</TableHead>
-              <TableHead style={{ width: 'auto' }}>File Data</TableHead>
-              <TableHead style={{ minWidth: 160 }}>Upload Progress</TableHead>
+              <TableHead>Info</TableHead>
+              <TableHead>File Data</TableHead>
+              <TableHead>Upload Progress</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
