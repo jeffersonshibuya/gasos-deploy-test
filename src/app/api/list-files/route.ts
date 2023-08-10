@@ -35,7 +35,7 @@ export async function POST() {
       const command = new GetObjectTaggingCommand(inputTagging);
       const response = await s3Client.send(command);
       const status =
-        response.TagSet?.filter((tag) => tag.Key === 'status')[0].Value || '';
+        response.TagSet?.filter((tag) => tag.Key === 'status')[0]?.Value || '';
 
       files.push({
         key: object.Key,
@@ -66,7 +66,7 @@ export async function POST() {
 
     return NextResponse.json({ files });
   } catch (error) {
-    console.log('Error');
+    console.log('Error', error);
     return NextResponse.json({ files: [] });
   }
 }

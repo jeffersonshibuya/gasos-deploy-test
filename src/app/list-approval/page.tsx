@@ -1,12 +1,12 @@
-import FilesListApproval from './components/FilesList';
+import FilesListApproval from './components';
 
-import { GetListFiles } from '@/actions/getListFiles';
-import { FilesResponseData } from '@/types';
+import { GetFiles } from '@/actions/getFiles';
+import { FilesDBResponseData } from '@/types';
 
 export const revalidate = 0;
 
 export default async function ListApproval() {
-  const files: Array<FilesResponseData> = await GetListFiles();
+  const files: Array<FilesDBResponseData> = await GetFiles();
 
   return <FilesListApproval files={files || []} />;
 }

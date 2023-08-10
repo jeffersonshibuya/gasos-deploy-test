@@ -3,17 +3,8 @@
 import React from 'react';
 import Select from 'react-select';
 
+import { years } from '@/data/filesData';
 import { SelectionDefaultType } from '@/types';
-
-const currentYear = new Date().getFullYear();
-
-const options: SelectionDefaultType[] = [];
-for (let i = 0; i < 4; i++) {
-  options.push({
-    value: String(currentYear - i),
-    label: String(currentYear - i)
-  });
-}
 
 interface SelectYearsProps {
   handleSelectYear: ({ label, value }: SelectionDefaultType) => void;
@@ -29,7 +20,7 @@ export default function SelectYears({
       <Select
         isSearchable={false}
         isClearable={false}
-        options={options}
+        options={years()}
         value={value}
         onChange={(item) => handleSelectYear(item || ({} as any))}
       />

@@ -22,7 +22,7 @@ import { FileUp, X } from 'lucide-react';
 import * as z from 'zod';
 
 interface UploadFormProps {
-  handleUpload: (folder: string) => void;
+  handleUpload: (folder: string, year: string, electionType: string) => void;
   isFolderError: boolean;
   cancelUpload: () => void;
 }
@@ -52,7 +52,7 @@ export default function UploadForm({
 
   function onSubmit(data: z.infer<typeof UploadFormSchema>) {
     const folderSanitize = `${data.year.value}_${data.electionType.value}_COUNTY_USER-123_1691175876`;
-    handleUpload(folderSanitize);
+    handleUpload(folderSanitize, data.year.value, data.electionType.value);
   }
 
   return (

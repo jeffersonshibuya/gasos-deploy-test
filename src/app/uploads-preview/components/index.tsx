@@ -59,7 +59,7 @@ export default function UploadsList() {
     return response.data.signedUrl || '';
   };
 
-  const handleUpload = async (folder: string) => {
+  const handleUpload = async (folder: string, year: string, electionType: string) => {
     if (abortController.signal.aborted) {
       setAbortController(new AbortController());
     }
@@ -132,9 +132,19 @@ export default function UploadsList() {
         await Promise.all(responsePromises);
 
         // Set status tagging to the file
-        await axios.put('/api/upload-files', {
-          fileName: `${folder}/${uploads[0].file.name}`
-        });
+        // await axios.put('/api/upload-files', {
+        //   fileName: `${folder}/${uploads[0].file.name}`
+        // });
+
+        // Save info in DynamoDB table
+        const fileData = uploads[0].file
+        await axios.post('/api/save-file', {
+          fileName: fileData.name,
+          folder,
+          size: fileData.size,
+          year,
+          electionType
+        })
 
         // All uploads completed successfully
         // toast.success('Upload successful');

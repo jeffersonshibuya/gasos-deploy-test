@@ -17,6 +17,19 @@ export interface FilesResponseData {
   status?: string;
 }
 
+export interface FilesDBResponseData {
+  id: string;
+  file: string;
+  folder: string;
+  status: string;
+  year: string;
+  electionType: string;
+  county?: string;
+  updated_at: string;
+  size: number;
+  isPublic: boolean;
+}
+
 export interface FilesResponseDataGrouped {
   folder: 'folder-testing-2';
   isFile?: boolean;

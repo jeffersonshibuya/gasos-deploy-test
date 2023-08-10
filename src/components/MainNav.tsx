@@ -31,9 +31,9 @@ export function MainNav({
       },
       {
         icon: LayoutList,
-        label: 'List - County',
-        active: pathName === '/list',
-        href: '/list',
+        label: 'List - Public',
+        active: pathName === '/list-public',
+        href: '/list-public',
         show: true
       },
       {
