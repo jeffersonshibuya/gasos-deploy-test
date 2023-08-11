@@ -14,8 +14,13 @@ const client = new DynamoDBClient({
 export async function POST() {
   try {
     const input = {
-      TableName: process.env.AWS_DYNAMODB_TABLE_NAME
+      TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+      FilterExpression: 'isPublic = :isPublicValue',
+      ExpressionAttributeValues: {
+        ':isPublicValue': { BOOL: true }
+      }
     };
+
     const command = new ScanCommand(input);
     const response = await client.send(command);
 

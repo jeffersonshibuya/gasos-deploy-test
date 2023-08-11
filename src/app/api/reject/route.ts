@@ -35,7 +35,7 @@ const SESClient = new SESv2Client({
 const updateS3ObjectKey = async (folder: string, fileName: string) => {
   // Move files to public folder
   const sourceKey = `${folder}/${fileName}`;
-  const destinationKey = `public/${sourceKey}`;
+  const destinationKey = `rejected/${sourceKey}`;
   const bucketName = process.env.AWS_BUCKET_NAME;
 
   // Create a CopyObjectCommand to copy the file to the new location
@@ -56,34 +56,42 @@ const updateS3ObjectKey = async (folder: string, fileName: string) => {
   await s3Client.send(new DeleteObjectCommand(deleteObjectParams));
 };
 
-const updateDynamoDBItem = async (fileId: string) => {
+const updateDynamoDBItem = async (
+  fileId: string,
+  reason: string,
+  folder: string
+) => {
   const params = {
     TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
     Key: {
       id: { S: fileId }
     },
-    UpdateExpression: 'SET #status = :statusValue, #isPublic = :isPublicValue',
+    UpdateExpression:
+      'SET #status = :statusValue, #reason = :reasonValue, #folder = :folderValue',
     ExpressionAttributeNames: {
       '#status': 'status',
-      '#isPublic': 'isPublic'
+      '#reason': 'reason',
+      '#folder': 'folder'
     },
     ExpressionAttributeValues: {
-      ':statusValue': { S: 'approved' },
-      ':isPublicValue': { BOOL: true }
+      ':statusValue': { S: 'rejected' },
+      ':reasonValue': { S: reason },
+      ':folderValue': { S: 'rejected/' + folder }
     },
     ReturnValues: 'ALL_NEW'
   };
 
   const command = new UpdateItemCommand(params);
-  await client.send(command);
+  const response = await client.send(command);
+  return response;
 };
 
 export async function POST(request: Request) {
-  const { fileId, folder, fileName } = await request.json();
+  const { fileId, folder, fileName, reason } = await request.json();
 
   try {
     await updateS3ObjectKey(folder, fileName);
-    const response = await updateDynamoDBItem(fileId);
+    const response = await updateDynamoDBItem(fileId, reason, folder);
 
     // send email confirmation
     const inputSES = {
@@ -96,11 +104,11 @@ export async function POST(request: Request) {
       Content: {
         Simple: {
           Subject: {
-            Data: 'File Approved'
+            Data: 'File Rejected'
           },
           Body: {
             Text: {
-              Data: `Thank you for your upload. Your file was APPROVED and it's available for public access`
+              Data: `Your file was rejected. Please fix the issues and upload again. \n\n Reason: ${reason}`
             }
           }
         }
@@ -113,6 +121,6 @@ export async function POST(request: Request) {
     return NextResponse.json(response);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: 'error' });
+    return NextResponse.json(error);
   }
 }

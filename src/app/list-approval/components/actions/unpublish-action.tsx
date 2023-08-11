@@ -8,35 +8,36 @@ import { Button } from '@/components/ui/button';
 
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
-import { Loader2 } from 'lucide-react';
+import { Link2Off, Loader2, Lock } from 'lucide-react';
 
-interface ApprovalActionProps {
+interface UnpublishActionProps {
   id: string;
   fileName: string;
   folder: string;
 }
 
-export default function ApprovalAction({
+export default function UnpublishAction({
   id,
   fileName,
   folder
-}: ApprovalActionProps) {
+}: UnpublishActionProps) {
   const router = useRouter();
 
   const [fileId, setFileId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleApproveFile = async () => {
+  const handleUnpublishFile = async () => {
     setIsLoading(true);
-    const response = await axios.post('/api/approve', {
+    const response = await axios.post('/api/unpublish', {
       fileId,
       folder,
       fileName
     });
-    if (response.data.$metadata.httpStatusCode !== 200) {
+
+    if (response.data.$metadata?.httpStatusCode !== 200) {
       toast.error('Something went wrong. Please try again in a few minutes');
     } else {
-      toast.success('File Approved');
+      toast.success('File Unpublished');
     }
     router.refresh();
     setIsLoading(false);
@@ -49,12 +50,12 @@ export default function ApprovalAction({
   return (
     <Button
       size={'icon'}
-      className="group bg-green-200 hover:bg-green-400"
-      onClick={handleApproveFile}
+      className="group bg-orange-300 hover:bg-orange-400"
+      onClick={handleUnpublishFile}
       disabled={isLoading}
     >
       {!isLoading ? (
-        <CheckCircledIcon className="h-5 w-5 text-green-700 group-hover:text-green-900" />
+        <Link2Off className="h-5 w-5 text-orange-700 group-hover:text-orange-900" />
       ) : (
         <Loader2 className="animate-spin text-neutral-800" />
       )}

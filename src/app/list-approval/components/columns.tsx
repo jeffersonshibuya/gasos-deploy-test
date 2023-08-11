@@ -2,6 +2,8 @@
 
 import ApprovalAction from './actions/approval-action';
 import DownloadAction from './actions/download-action';
+import RejectionAction from './actions/rejection-action';
+import UnpublishAction from './actions/unpublish-action';
 import { statuses } from './data/statuses';
 
 import { FilesDBResponseData } from '@/types';
@@ -21,8 +23,12 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     header: 'File'
   },
   {
-    accessorKey: 'folder',
-    header: 'Folder'
+    accessorKey: 'electionType',
+    header: 'Election Type'
+  },
+  {
+    accessorKey: 'year',
+    header: 'Year'
   },
   {
     accessorKey: 'updated_at',
@@ -80,7 +86,17 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
       return (
         <div className="flex items-center justify-end gap-2">
           {row.original.status === 'waiting-approval' && (
-            <ApprovalAction
+            <>
+              <ApprovalAction
+                id={row.original.id}
+                fileName={row.original.file}
+                folder={row.original.folder}
+              />
+              <RejectionAction data={row.original} />
+            </>
+          )}
+          {row.original.status === 'approved' && (
+            <UnpublishAction
               id={row.original.id}
               fileName={row.original.file}
               folder={row.original.folder}

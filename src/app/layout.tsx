@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 import { MainNav } from '@/components/MainNav';
 import DownloadModal from '@/components/modals/DownloadModal';
 import LoginModal from '@/components/modals/LoginModal';
+import RejectModal from '@/components/modals/RejectModal';
 import UploadFolderModal from '@/components/modals/UploadFolderModal';
 import { UserNav } from '@/components/UserNav';
 
@@ -30,6 +31,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <LoginModal />
         <DownloadModal />
+        <RejectModal />
         <UploadFolderModal />
         <ToasterProvider />
         <div className="flex-col md:flex">

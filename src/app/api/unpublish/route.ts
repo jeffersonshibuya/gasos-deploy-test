@@ -33,27 +33,31 @@ const SESClient = new SESv2Client({
 });
 
 const updateS3ObjectKey = async (folder: string, fileName: string) => {
-  // Move files to public folder
-  const sourceKey = `${folder}/${fileName}`;
-  const destinationKey = `public/${sourceKey}`;
-  const bucketName = process.env.AWS_BUCKET_NAME;
+  try {
+    // Move files to public folder
+    const sourceKey = `${folder}/${fileName}`;
+    const destinationKey = `${sourceKey}`;
+    const bucketName = process.env.AWS_BUCKET_NAME;
 
-  // Create a CopyObjectCommand to copy the file to the new location
-  const copyObjectParams = {
-    CopySource: `/${bucketName}/${sourceKey}`,
-    Bucket: bucketName,
-    Key: destinationKey
-  };
+    // Create a CopyObjectCommand to copy the file to the new location
+    const copyObjectParams = {
+      CopySource: `${bucketName}/public/${sourceKey}`,
+      Bucket: bucketName,
+      Key: destinationKey
+    };
 
-  await s3Client.send(new CopyObjectCommand(copyObjectParams));
+    await s3Client.send(new CopyObjectCommand(copyObjectParams));
 
-  // Delete the original file (if needed)
-  const deleteObjectParams = {
-    Bucket: bucketName,
-    Key: sourceKey
-  };
+    // Delete the original file (if needed)
+    const deleteObjectParams = {
+      Bucket: bucketName,
+      Key: 'public/' + sourceKey
+    };
 
-  await s3Client.send(new DeleteObjectCommand(deleteObjectParams));
+    await s3Client.send(new DeleteObjectCommand(deleteObjectParams));
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const updateDynamoDBItem = async (fileId: string) => {
@@ -68,14 +72,15 @@ const updateDynamoDBItem = async (fileId: string) => {
       '#isPublic': 'isPublic'
     },
     ExpressionAttributeValues: {
-      ':statusValue': { S: 'approved' },
-      ':isPublicValue': { BOOL: true }
+      ':statusValue': { S: 'waiting-approval' },
+      ':isPublicValue': { BOOL: false }
     },
     ReturnValues: 'ALL_NEW'
   };
 
   const command = new UpdateItemCommand(params);
-  await client.send(command);
+  const response = await client.send(command);
+  return response;
 };
 
 export async function POST(request: Request) {
@@ -85,34 +90,9 @@ export async function POST(request: Request) {
     await updateS3ObjectKey(folder, fileName);
     const response = await updateDynamoDBItem(fileId);
 
-    // send email confirmation
-    const inputSES = {
-      // SendEmailRequest
-      FromEmailAddress: 'jefferson.shibuya@ipc-global.com',
-      Destination: {
-        // Destination
-        ToAddresses: ['jeffersonshibuya@yahoo.com.br']
-      },
-      Content: {
-        Simple: {
-          Subject: {
-            Data: 'File Approved'
-          },
-          Body: {
-            Text: {
-              Data: `Thank you for your upload. Your file was APPROVED and it's available for public access`
-            }
-          }
-        }
-      }
-    };
-
-    const commandSES = new SendEmailCommand(inputSES);
-    await SESClient.send(commandSES);
-
     return NextResponse.json(response);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: 'error' });
+    return NextResponse.json(error);
   }
 }

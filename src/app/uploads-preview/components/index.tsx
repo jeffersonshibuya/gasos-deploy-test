@@ -131,12 +131,7 @@ export default function UploadsList() {
 
         await Promise.all(responsePromises);
 
-        // Set status tagging to the file
-        // await axios.put('/api/upload-files', {
-        //   fileName: `${folder}/${uploads[0].file.name}`
-        // });
-
-        // Save info in DynamoDB table
+        // Save info in DynamoDB table and send email
         const fileData = uploads[0].file
         await axios.post('/api/save-file', {
           fileName: fileData.name,
@@ -146,8 +141,7 @@ export default function UploadsList() {
           electionType
         })
 
-        // All uploads completed successfully
-        // toast.success('Upload successful');
+        toast.success('Upload successful');
 
         if (!abortController.signal.aborted) {
           router.refresh();
