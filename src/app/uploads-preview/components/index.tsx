@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { FileRejection } from 'react-dropzone';
 import { toast } from 'react-hot-toast';
 
@@ -13,7 +13,8 @@ import UploadDropArea from './upload-drop-area';
 import UploadForm from './upload-form';
 import { UploadTable } from './upload-table';
 
-import { FilePreviewData } from '@/types';
+import useUploadCounty from '@/hooks/useUploadCounty';
+import { FilePreviewData, FilesDBResponseData } from '@/types';
 import { fadeIn, itemVariants } from '@/utils/animation';
 import axios, { AxiosResponse } from 'axios';
 import { motion } from 'framer-motion';
@@ -36,10 +37,14 @@ export type FileUploadProps = {
 };
 
 export default function UploadsList() {
+  const uploadCounty = useUploadCounty();
   const router = useRouter();
+
+  const searchParams = useSearchParams()
 
   const [uploads, setUploads] = useState<FileUploadProps[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
   const [showErrorFolder, setShowErrorFolder] = useState(false);
   const [filesPreview, setFilesPreview] = useState<FilePreviewData[]>([]);
   const [abortController, setAbortController] = useState(new AbortController());
@@ -59,7 +64,9 @@ export default function UploadsList() {
     return response.data.signedUrl || '';
   };
 
-  const handleUpload = async (folder: string, year: string, electionType: string) => {
+  const handleUpload = async (folder: string, year: string, electionType: string, county: string) => {
+    setUploadLoading(true)
+
     if (abortController.signal.aborted) {
       setAbortController(new AbortController());
     }
@@ -69,6 +76,18 @@ export default function UploadsList() {
 
       try {
         for (const fileUpload of uploads) {
+          // check if file is already in progress or approved
+          const checkFile = await axios.post<{ isValid: boolean, status?: string | null }>('/api/check-county-upload', {
+            county,
+            year,
+            electionType
+          })
+
+          if (!checkFile.data.isValid) {
+            toast(`File is already uploaded. Status ${checkFile.data.status}`)
+            return;
+          }
+
           const signedUrl = await handleGetPresignedUrl(fileUpload, folder);
 
           const responsePromise = axios
@@ -138,17 +157,20 @@ export default function UploadsList() {
           folder,
           size: fileData.size,
           year,
-          electionType
+          electionType,
+          county
         })
 
         toast.success('Upload successful');
 
         if (!abortController.signal.aborted) {
           router.refresh();
-          router.push('/list');
+          router.push('/list-approval');
         }
       } catch (error) {
         console.error('Upload failed', error);
+      } finally {
+        setUploadLoading(false)
       }
     }
   };
@@ -266,6 +288,15 @@ export default function UploadsList() {
     return isValid;
   };
 
+  useEffect(() => {
+    // check if user is Admin, if so, remove all data for county selection upload
+    // fow now it will be removed, since this url should be avail only for admin, or 
+    // by a county selecting to upload on their own page
+    if (!searchParams?.get('id')) {
+      uploadCounty.setFileData({} as FilesDBResponseData)
+    }
+  }, [searchParams])
+
   if (isLoading) {
     return <Loader />;
   }
@@ -304,6 +335,8 @@ export default function UploadsList() {
                 handleUpload={handleUpload}
                 isFolderError={showErrorFolder}
                 cancelUpload={cancelUpload}
+                countyUploadData={uploadCounty.fileData}
+                isLoading={uploadLoading}
               />
             )}
           </motion.div>

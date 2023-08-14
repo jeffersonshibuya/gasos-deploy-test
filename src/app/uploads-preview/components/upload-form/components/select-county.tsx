@@ -3,17 +3,17 @@
 import React from 'react';
 import Select from 'react-select';
 
-import { years } from '@/data/filesData';
+import { counties } from '@/data/filesData';
 import { SelectionDefaultType } from '@/types';
 
 interface SelectYearsProps {
-  handleSelectYear: ({ label, value }: SelectionDefaultType) => void;
+  handleSelectCounty: ({ label, value }: SelectionDefaultType) => void;
   value: SelectionDefaultType;
   isDisabled: boolean;
 }
 
-export default function SelectYears({
-  handleSelectYear,
+export default function SelectCounty({
+  handleSelectCounty,
   value,
   isDisabled
 }: SelectYearsProps) {
@@ -23,9 +23,9 @@ export default function SelectYears({
         isSearchable={false}
         isClearable={false}
         isDisabled={isDisabled}
-        options={years()}
+        options={counties()}
         value={value}
-        onChange={(item) => handleSelectYear(item || ({} as any))}
+        onChange={(item) => handleSelectCounty(item || ({} as any))}
       />
     </>
   );

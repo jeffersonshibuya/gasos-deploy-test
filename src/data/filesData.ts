@@ -37,3 +37,13 @@ export const years = () => {
   }
   return options;
 };
+
+export const counties = () => {
+  return [
+    { value: 'county_1', label: 'County_1' },
+    { value: 'county_2', label: 'County_2' },
+    { value: 'county_3', label: 'County_3' },
+    { value: 'county_4', label: 'County_4' },
+    { value: 'county_5', label: 'County_5' }
+  ];
+};

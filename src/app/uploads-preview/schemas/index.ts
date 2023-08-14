@@ -10,5 +10,9 @@ export const UploadFormSchema = z.object({
   electionType: z.object({
     label: z.string(),
     value: z.string()
+  }),
+  county: z.object({
+    label: z.string(),
+    value: z.string()
   })
 });

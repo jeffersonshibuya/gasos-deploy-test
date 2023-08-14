@@ -28,6 +28,7 @@ export interface FilesDBResponseData {
   updated_at: string;
   size: number;
   isPublic: boolean;
+  reason?: string;
 }
 
 export interface FilesResponseDataGrouped {

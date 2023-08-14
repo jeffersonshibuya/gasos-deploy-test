@@ -22,7 +22,8 @@ const SESClient = new SESv2Client({
 });
 
 export async function POST(request: Request) {
-  const { fileName, folder, year, electionType, size } = await request.json();
+  const { fileName, folder, year, electionType, size, county } =
+    await request.json();
 
   try {
     const item = {
@@ -34,6 +35,7 @@ export async function POST(request: Request) {
       year,
       electionType,
       size,
+      county,
       updated_at: new Date().toISOString()
     };
     const marshallItem = marshall(item);

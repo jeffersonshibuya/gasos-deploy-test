@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import SelectCounty from './components/select-county';
 import SelectElection from './components/select-election';
 import SelectYears from './components/select-years';
 import { Button } from '@/components/ui/button';
@@ -12,25 +13,33 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 
 import { UploadFormSchema } from '../../schemas';
 
-import { SelectionDefaultType } from '@/types';
+import { FilesDBResponseData, SelectionDefaultType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FileUp, X } from 'lucide-react';
+import { FileUp, UploadCloud, X } from 'lucide-react';
 import * as z from 'zod';
 
 interface UploadFormProps {
-  handleUpload: (folder: string, year: string, electionType: string) => void;
+  handleUpload: (
+    folder: string,
+    year: string,
+    electionType: string,
+    county: string
+  ) => void;
   isFolderError: boolean;
   cancelUpload: () => void;
+  countyUploadData: FilesDBResponseData;
+  isLoading: boolean;
 }
 
 export default function UploadForm({
   handleUpload,
   isFolderError,
-  cancelUpload
+  cancelUpload,
+  countyUploadData,
+  isLoading
 }: UploadFormProps) {
   const form = useForm<z.infer<typeof UploadFormSchema>>({
     resolver: zodResolver(UploadFormSchema)
@@ -50,10 +59,39 @@ export default function UploadForm({
     }
   }
 
+  function handleSelectCounty(countySelected: SelectionDefaultType) {
+    if (countySelected.value) {
+      form.clearErrors(['county']);
+      form.setValue('county', countySelected);
+    }
+  }
+
   function onSubmit(data: z.infer<typeof UploadFormSchema>) {
     const folderSanitize = `${data.year.value}_${data.electionType.value}_COUNTY_USER-123_1691175876`;
-    handleUpload(folderSanitize, data.year.value, data.electionType.value);
+    handleUpload(
+      folderSanitize,
+      data.year.value,
+      data.electionType.value,
+      data.county.value
+    );
   }
+
+  useEffect(() => {
+    if (countyUploadData) {
+      form.setValue('county', {
+        value: countyUploadData.county || '',
+        label: countyUploadData.county || ''
+      });
+      form.setValue('year', {
+        value: countyUploadData.year || '',
+        label: countyUploadData.year || ''
+      });
+      form.setValue('electionType', {
+        value: countyUploadData.electionType || '',
+        label: countyUploadData.electionType || ''
+      });
+    }
+  }, [countyUploadData, form]);
 
   return (
     <div className="mb-6 rounded-lg border border-neutral-300 px-4 py-4 shadow-sm">
@@ -81,6 +119,7 @@ export default function UploadForm({
                     <FormLabel>Year*</FormLabel>
                     <FormControl>
                       <SelectYears
+                        isDisabled={!!countyUploadData.year}
                         handleSelectYear={handleSelectYear}
                         value={field.value}
                       />
@@ -98,7 +137,26 @@ export default function UploadForm({
                     <FormLabel>Election Type*</FormLabel>
                     <FormControl>
                       <SelectElection
+                        isDisabled={!!countyUploadData.electionType}
                         handleSelectElection={handleSelectElection}
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <FormField
+                name="county"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>County*</FormLabel>
+                    <FormControl>
+                      <SelectCounty
+                        isDisabled={!!countyUploadData.county}
+                        handleSelectCounty={handleSelectCounty}
                         value={field.value}
                       />
                     </FormControl>
@@ -111,13 +169,22 @@ export default function UploadForm({
               <Button
                 variant="default"
                 type="submit"
-                disabled={isFolderError}
+                disabled={isFolderError || isLoading}
                 className="mt-8 bg-indigo-600 text-white 
                 transition duration-300 hover:bg-indigo-700
                 hover:text-white disabled:opacity-40"
               >
-                <FileUp className="mr-2 h-4 w-4" />
-                Upload Files
+                {isLoading ? (
+                  <>
+                    <UploadCloud className="mr-2 h-4 w-4" />
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <FileUp className="mr-2 h-4 w-4" />
+                    Upload Files
+                  </>
+                )}
               </Button>
               <Button
                 className="ml-2 gap-1"

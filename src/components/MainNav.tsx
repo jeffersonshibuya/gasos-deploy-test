@@ -38,6 +38,13 @@ export function MainNav({
       },
       {
         icon: LayoutList,
+        label: 'List - County',
+        active: pathName === '/list-county',
+        href: '/list-county',
+        show: true
+      },
+      {
+        icon: LayoutList,
         label: 'List - GA SOS',
         active: pathName === '/list-approval',
         href: '/list-approval',

@@ -23,6 +23,10 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     header: 'File'
   },
   {
+    accessorKey: 'county',
+    header: 'County'
+  },
+  {
     accessorKey: 'electionType',
     header: 'Election Type'
   },
