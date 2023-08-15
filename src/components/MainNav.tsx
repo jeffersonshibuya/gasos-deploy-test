@@ -77,7 +77,21 @@ export function MainNav({
         active: pathName === '/uploads-preview',
         href: '/uploads-preview',
         show: !!currentUser
+      },
+      {
+        icon: ImagePlusIcon,
+        label: 'Upload - Multipart',
+        active: pathName === '/upload-multipart-2',
+        href: '/upload-multipart-2',
+        show: !!currentUser
       }
+      // {
+      //   icon: ImagePlusIcon,
+      //   label: 'Upload - Multipart',
+      //   active: pathName === '/upload-multipart',
+      //   href: '/upload-multipart',
+      //   show: !!currentUser
+      // }
     ],
     [currentUser, pathName]
   );
