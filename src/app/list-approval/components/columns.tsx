@@ -39,15 +39,17 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     header: 'Date',
     cell: ({ row }) => {
       return (
-        <time dateTime={row.original.updated_at}>
-          {new Intl.DateTimeFormat('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-          }).format(new Date(Date.parse(row.original.updated_at)))}
-        </time>
+        row.original.updated_at && (
+          <time dateTime={row.original.updated_at}>
+            {new Intl.DateTimeFormat('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit'
+            }).format(new Date(Date.parse(row.original.updated_at)))}
+          </time>
+        )
       );
     }
   },

@@ -1,4 +1,4 @@
-import Upload from './components/upload';
+import Upload from './components';
 
 export default async function UploadMultipart() {
   return (

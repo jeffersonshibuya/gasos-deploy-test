@@ -54,3 +54,10 @@ export interface SelectionDefaultType {
   label: string;
   value: string;
 }
+
+export interface FileResponse {
+  statusCode: number;
+  status: string;
+  updated_at: string;
+  created_at: string;
+}
