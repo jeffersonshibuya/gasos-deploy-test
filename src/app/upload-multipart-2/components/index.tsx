@@ -17,7 +17,7 @@ export type FileStatus =
   | 'loading'
   | 'waiting-approval'
   | 'canceled'
-  | 'error';
+  | 'failed';
 
 export type FileUploadProps = {
   file: File;
@@ -35,6 +35,8 @@ export default function Upload() {
   const [fileUpload, setFileUpload] = useState<FileUploadProps>();
   const [uploadProgress, setUploadProgress] = useState(0);
   const [bytesLoaded, setBytesLoaded] = useState(0);
+  const [uploadId, setUploadId] = useState('');
+  const [fileId, setFileId] = useState('');
 
   // const [totalChunks, setTotalChunks] = useState(0);
 
@@ -52,6 +54,9 @@ export default function Upload() {
     electionType: string,
     county: string
   ): Promise<string | null> {
+    const chunkSize = 10 * 1024 * 1024;
+    const totalChunks = Math.ceil((fileUpload?.file?.size || 1) / chunkSize);
+
     const response = await axios.post('/api/upload-multipart', {
       filename: fileUpload?.file.name,
       folder: folder.trim(),
@@ -59,7 +64,8 @@ export default function Upload() {
       electionType,
       size: fileUpload?.file.size,
       county,
-      id
+      id,
+      totalChunks
     });
 
     if (response.data.$metadata?.httpStatusCode !== 200) {
@@ -72,61 +78,80 @@ export default function Upload() {
       status: 'loading'
     };
 
-    setFileUpload((prevState) => {
-      return updatedStatus;
-    });
+    setFileUpload(updatedStatus);
 
-    return response.data.UploadId;
+    const uploadIdResponse = response.data.UploadId;
+    setUploadId(uploadIdResponse);
+
+    return uploadIdResponse;
   }
 
-  async function UploadParts(startUploadId: string) {
-    // Create an array to store part information
-    const parts = [];
+  async function UploadParts(
+    startUploadId: string,
+    id: string,
+    initialOffset = 0,
+    initialPartNumber = 1
+  ) {
+    try {
+      // Create an array to store part information
+      const parts = [];
 
-    // Calculate part size based on your requirement
-    const partSize = 10 * 1024 * 1024; // 10MB parts
+      // Calculate part size based on your requirement
+      const partSize = 10 * 1024 * 1024; // 10MB parts
 
-    // Start uploading parts
-    let offset = 0;
-    let partNumber = 1;
+      // Start uploading parts
+      let offset = initialOffset;
+      let partNumber = initialPartNumber;
 
-    const uploadFile = fileUpload?.file || ({} as File);
+      const uploadFile = fileUpload?.file || ({} as File);
 
-    const chunkSize = 10 * 1024 * 1024;
-    const totalChunks = (fileUpload?.file?.size || 1) / chunkSize;
-    console.log(totalChunks);
+      const chunkSize = 10 * 1024 * 1024;
+      const totalChunks = Math.ceil((fileUpload?.file?.size || 1) / chunkSize);
 
-    while (offset < uploadFile.size) {
-      const end = Math.min(offset + partSize, uploadFile.size);
-      const part = uploadFile.slice(offset, end);
+      while (offset < uploadFile.size) {
+        const end = Math.min(offset + partSize, uploadFile.size);
+        const part = uploadFile.slice(offset, end);
 
-      const formData = new FormData();
-      formData.append('body', part);
-      formData.append('filename', fileUpload?.file.name || '');
-      formData.append('uploadId', startUploadId);
-      formData.append('partNumber', String(partNumber));
+        const formData = new FormData();
+        formData.append('body', part);
+        formData.append('filename', fileUpload?.file.name || '');
+        formData.append('uploadId', startUploadId);
+        formData.append('partNumber', String(partNumber));
+        formData.append('id', String(id));
 
-      // Upload the part to S3
-      const uploadPartResponse = await axios({
-        method: 'put',
-        url: `${'/api/upload-multipart'}`,
-        data: formData
-      });
+        // Upload the part to S3
+        const uploadPartResponse = await axios({
+          method: 'put',
+          url: `${'/api/upload-multipart'}`,
+          data: formData
+        });
 
-      parts.push({
-        ETag: uploadPartResponse.data.ETag,
-        PartNumber: partNumber
-      });
+        parts.push({
+          ETag: uploadPartResponse.data.ETag,
+          PartNumber: partNumber
+        });
 
-      const progress = ((partNumber - 1) / totalChunks) * 100;
-      setUploadProgress(progress);
-      setBytesLoaded((partNumber - 1) * chunkSize);
+        const progress = ((partNumber - 1) / totalChunks) * 100;
+        setUploadProgress(progress);
+        setBytesLoaded((partNumber - 1) * chunkSize);
 
-      offset += partSize;
-      partNumber += 1;
+        offset += partSize;
+        partNumber += 1;
+      }
+
+      return parts;
+    } catch (error) {
+      console.log('Oooops something went wrong');
+
+      const updatedStatus: FileUploadProps = {
+        ...fileUpload!,
+        status: 'failed'
+      };
+
+      setFileUpload(updatedStatus);
+
+      return null;
     }
-
-    return parts;
   }
 
   const CompleteUpload = async (
@@ -167,6 +192,7 @@ export default function Upload() {
 
     setUploading(true);
     const id = `${year}-${county}-${electionType}`.trim().replace(/\s/g, '_');
+    setFileId(id);
 
     // Start Upload
     const startUploadId = await handleStartUpload(
@@ -179,10 +205,12 @@ export default function Upload() {
 
     if (startUploadId) {
       // Upload parts
-      const parts = await UploadParts(startUploadId);
+      const parts = await UploadParts(startUploadId, id);
 
-      // Complete the multipart upload
-      await CompleteUpload(parts, startUploadId, id);
+      if (parts) {
+        // Complete the multipart upload
+        await CompleteUpload(parts, startUploadId, id);
+      }
     }
 
     setUploading(false);
@@ -190,6 +218,36 @@ export default function Upload() {
 
   const handleRemoveFile = () => {
     setFileUpload({} as FileUploadProps);
+  };
+
+  const handleResume = async () => {
+    const response = await axios.post('/api/check-file-progress', {
+      uploadId
+    });
+
+    const fileData = response.data;
+
+    const chunkSize = 10 * 1024 * 1024;
+    const initialOffset = (Number(fileData.partNumber) - 1) * chunkSize;
+    const initialPartNumber = Number(fileData.partNumber);
+
+    setUploading(true);
+
+    if (fileData.uploadId) {
+      const parts = await UploadParts(
+        fileData.uploadId,
+        fileId,
+        initialOffset,
+        initialPartNumber
+      );
+
+      if (parts) {
+        // Complete the multipart upload
+        await CompleteUpload(parts, fileData.uploadId, fileId);
+      }
+    }
+
+    setUploading(false);
   };
 
   return (
@@ -213,6 +271,7 @@ export default function Upload() {
               handleRemoveFile={handleRemoveFile}
               uploadProgress={uploadProgress}
               bytesLoaded={bytesLoaded}
+              handleResume={handleResume}
             />
           </motion.div>
         </motion.div>

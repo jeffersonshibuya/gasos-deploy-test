@@ -23,6 +23,7 @@ import {
   Hourglass,
   Loader,
   Paperclip,
+  RefreshCcw,
   Trash,
   X
 } from 'lucide-react';
@@ -30,6 +31,7 @@ import {
 interface UploadTableProps {
   fileUpload: FileUploadProps;
   handleRemoveFile: (fileName: string) => void;
+  handleResume: () => void;
   uploadProgress: number;
   bytesLoaded: number;
 }
@@ -38,6 +40,7 @@ export function UploadTable({
   fileUpload,
   handleRemoveFile,
   uploadProgress,
+  handleResume,
   bytesLoaded
 }: UploadTableProps) {
   const loadStatusIcon = (fileStatus: FileStatus) => {
@@ -48,8 +51,8 @@ export function UploadTable({
         return <Ban size={32} />;
       case 'loading':
         return <Loader className="animate-spin" size={32} />;
-      case 'error':
-        return <X className="animate-spin" size={32} />;
+      case 'failed':
+        return <X size={32} />;
       case 'pending':
         return <Hourglass size={32} />;
       default:
@@ -133,6 +136,15 @@ export function UploadTable({
                     className="text-red-600"
                   >
                     <Trash size={18} />
+                  </Button>
+                )}
+                {fileUpload.status === 'failed' && (
+                  <Button
+                    variant={'ghost'}
+                    onClick={() => handleResume()}
+                    className="text-indigo-600"
+                  >
+                    <RefreshCcw size={18} />
                   </Button>
                 )}
               </TableCell>

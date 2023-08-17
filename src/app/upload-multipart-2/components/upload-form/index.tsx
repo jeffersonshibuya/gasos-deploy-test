@@ -38,7 +38,7 @@ export default function UploadForm({
   handleUpload,
   cancelUpload,
   countyUploadData,
-  isLoading
+  isLoading,
 }: UploadFormProps) {
   const form = useForm<z.infer<typeof UploadFormSchema>>({
     resolver: zodResolver(UploadFormSchema)

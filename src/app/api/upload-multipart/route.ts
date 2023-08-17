@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBClient,
+  PutItemCommand,
+  UpdateItemCommand
+} from '@aws-sdk/client-dynamodb';
 import {
   CreateMultipartUploadCommand,
   S3Client,
@@ -25,8 +29,16 @@ const ddbClient = new DynamoDBClient({
 });
 
 export async function POST(request: Request) {
-  const { filename, folder, year, electionType, size, county, id } =
-    await request.json();
+  const {
+    filename,
+    folder,
+    year,
+    electionType,
+    size,
+    county,
+    id,
+    totalChunks
+  } = await request.json();
 
   const s3Response = await s3Client.send(
     new CreateMultipartUploadCommand({
@@ -45,6 +57,7 @@ export async function POST(request: Request) {
     electionType,
     size,
     county,
+    totalChunks,
     uploadId: s3Response.UploadId,
     created_at: new Date().toISOString()
   };
@@ -68,7 +81,8 @@ export async function PUT(request: Request) {
     const body = data.get('body') as File;
     const filename = data.get('filename');
     const uploadId = data.get('uploadId');
-    const partNumber = data.get('partNumber');
+    const partNumber = data.get('partNumber') as string;
+    const id = data.get('id') as string;
 
     const bytes = await body.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -82,6 +96,27 @@ export async function PUT(request: Request) {
         Body: buffer
       })
     );
+
+    // save last etag and partnumber uploaded for recovery purpuses
+
+    const input = {
+      TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+      Key: {
+        id: { S: id }
+      },
+      UpdateExpression: 'SET #partNumber = :partNumber, #etag = :etag',
+      ExpressionAttributeNames: {
+        '#partNumber': 'partNumber',
+        '#etag': 'etag'
+      },
+      ExpressionAttributeValues: {
+        ':partNumber': { S: partNumber },
+        ':etag': { S: String(uploadPartResponse.ETag) }
+      }
+    };
+
+    const command = new UpdateItemCommand(input);
+    await ddbClient.send(command);
 
     return NextResponse.json(uploadPartResponse);
   } catch (error) {
