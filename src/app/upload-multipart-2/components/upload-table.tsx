@@ -56,7 +56,7 @@ export function UploadTable({
       case 'pending':
         return <Hourglass size={32} />;
       default:
-        return <Paperclip size={32} />;
+        return <X size={32} />;
     }
   };
 

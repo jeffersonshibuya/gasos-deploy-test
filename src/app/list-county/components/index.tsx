@@ -19,7 +19,7 @@ interface FilesListProps {
   files: FilesDBResponseData[];
 }
 
-export default function FilesPublicList({ files }: FilesListProps) {
+export default function FilesCountyList({ files }: FilesListProps) {
   const router = useRouter();
   const uploadCounty = useUploadCounty()
 

@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable prettier/prettier */
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';

@@ -1,6 +1,7 @@
 'use client';
 
 import DownloadAction from './actions/download-action';
+import ResumeUploadAction from './actions/resume-upload-action';
 import UploadAction from './actions/upload-action';
 
 import { electionTypes } from '@/data/filesData';
@@ -64,18 +65,18 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     }
   },
   {
-    accessorKey: 'updated_at',
-    header: 'Date',
+    accessorKey: 'created_at',
+    header: 'Created',
     cell: ({ row }) => {
       return (
-        <time dateTime={row.original.updated_at}>
+        <time dateTime={row.original.created_at}>
           {new Intl.DateTimeFormat('en-US', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit'
-          }).format(new Date(Date.parse(row.original.updated_at)))}
+          }).format(new Date(Date.parse(row.original.created_at)))}
         </time>
       );
     }
@@ -96,6 +97,10 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
           {row.original.status === 'rejected' && (
             <UploadAction data={row.original} />
           )}
+          {localStorage.getItem('upload-fail') &&
+            localStorage.getItem('upload-fail') === row.original.uploadId && (
+              <ResumeUploadAction data={row.original} />
+            )}
           <DownloadAction data={row.original} />
         </div>
       );

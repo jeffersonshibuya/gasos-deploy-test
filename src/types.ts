@@ -25,10 +25,12 @@ export interface FilesDBResponseData {
   year: string;
   electionType: string;
   county?: string;
-  updated_at: string;
+  created_at: string;
+  updated_at?: string;
   size: number;
   isPublic: boolean;
   reason?: string;
+  uploadId: string;
 }
 
 export interface FilesResponseDataGrouped {

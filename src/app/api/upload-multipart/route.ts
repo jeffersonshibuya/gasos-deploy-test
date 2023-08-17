@@ -98,24 +98,20 @@ export async function PUT(request: Request) {
     );
 
     // save last etag and partnumber uploaded for recovery purpuses
-
-    const input = {
-      TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
-      Key: {
-        id: { S: id }
-      },
-      UpdateExpression: 'SET #partNumber = :partNumber, #etag = :etag',
-      ExpressionAttributeNames: {
-        '#partNumber': 'partNumber',
-        '#etag': 'etag'
-      },
-      ExpressionAttributeValues: {
-        ':partNumber': { S: partNumber },
-        ':etag': { S: String(uploadPartResponse.ETag) }
-      }
+    const item = {
+      uploadId,
+      etag: uploadPartResponse.ETag,
+      partNumber
     };
 
-    const command = new UpdateItemCommand(input);
+    const marshallItem = marshall(item);
+
+    const input = {
+      TableName: 'gasos-upload-progress',
+      Item: marshallItem
+    };
+
+    const command = new PutItemCommand(input);
     await ddbClient.send(command);
 
     return NextResponse.json(uploadPartResponse);

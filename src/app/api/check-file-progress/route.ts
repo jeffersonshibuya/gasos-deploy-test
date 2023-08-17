@@ -29,8 +29,27 @@ export async function POST(request: Request) {
 
   const command = new ScanCommand(input);
   const response = await ddbClient.send(command);
-
   const fileItem = response.Items?.map((item) => unmarshall(item))[0] || [];
 
-  return NextResponse.json(fileItem);
+  const inputEtags = {
+    TableName: 'gasos-upload-progress',
+    FilterExpression: '#uploadId = :uploadIdValue',
+    ExpressionAttributeNames: {
+      '#uploadId': 'uploadId'
+    },
+    ExpressionAttributeValues: {
+      ':uploadIdValue': { S: uploadId }
+    }
+  };
+
+  const commandEtag = new ScanCommand(inputEtags);
+  const responseEtag = await ddbClient.send(commandEtag);
+  const etags = responseEtag.Items?.map((item) => unmarshall(item)) || [];
+
+  return NextResponse.json({
+    ...fileItem,
+    etags: etags.map((value: any) => {
+      return { partNumber: value.partNumber, etag: value.etag };
+    })
+  });
 }

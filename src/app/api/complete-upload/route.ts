@@ -4,9 +4,14 @@ import { FileResponse } from '@/types';
 import {
   DynamoDBClient,
   PutItemCommand,
+  ScanCommand,
   UpdateItemCommand
 } from '@aws-sdk/client-dynamodb';
-import { CompleteMultipartUploadCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  CompleteMultipartUploadCommand,
+  CompletedPart,
+  S3Client
+} from '@aws-sdk/client-s3';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
@@ -23,9 +28,33 @@ const ddbClient = new DynamoDBClient(credentials);
 const SESClient = new SESv2Client(credentials);
 
 export async function POST(request: Request) {
-  const { filename, uploadId, parts, id } = await request.json();
+  const { filename, uploadId, id } = await request.json();
 
   try {
+    // get upload parts
+    const inputParts = {
+      TableName: 'gasos-upload-progress',
+      FilterExpression: '#uploadId = :uploadIdValue',
+      ExpressionAttributeNames: {
+        '#uploadId': 'uploadId'
+      },
+      ExpressionAttributeValues: {
+        ':uploadIdValue': { S: uploadId }
+      }
+    };
+
+    const commandParts = new ScanCommand(inputParts);
+    const responseParts = await ddbClient.send(commandParts);
+
+    const partItems = responseParts.Items?.map((item) => unmarshall(item));
+
+    const parts = partItems
+      ?.map((part) => ({
+        PartNumber: Number(part.partNumber),
+        ETag: part.etag
+      }))
+      .sort((a, b) => a.PartNumber - b.PartNumber);
+
     const completeUploadResponse = await s3Client.send(
       new CompleteMultipartUploadCommand({
         Bucket: process.env.AWS_BUCKET_NAME,

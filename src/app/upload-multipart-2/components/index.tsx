@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import UploadDropArea from './upload-drop-area';
 import UploadForm from './upload-form';
@@ -32,13 +32,14 @@ export default function Upload() {
   const router = useRouter();
 
   const [uploading, setUploading] = useState(false);
-  const [fileUpload, setFileUpload] = useState<FileUploadProps>();
+  const [fileUpload, setFileUpload] = useState<FileUploadProps>(
+    {} as FileUploadProps
+  );
   const [uploadProgress, setUploadProgress] = useState(0);
   const [bytesLoaded, setBytesLoaded] = useState(0);
-  const [uploadId, setUploadId] = useState('');
   const [fileId, setFileId] = useState('');
 
-  // const [totalChunks, setTotalChunks] = useState(0);
+  const chunkSize = 10 * 1024 * 1024;
 
   const handleDrop = useCallback(async (acceptedFiles: File[]) => {
     setFileUpload({
@@ -81,7 +82,6 @@ export default function Upload() {
     setFileUpload(updatedStatus);
 
     const uploadIdResponse = response.data.UploadId;
-    setUploadId(uploadIdResponse);
 
     return uploadIdResponse;
   }
@@ -127,7 +127,7 @@ export default function Upload() {
         });
 
         parts.push({
-          ETag: uploadPartResponse.data.ETag,
+          ETag: uploadPartResponse.data.ETag as string,
           PartNumber: partNumber
         });
 
@@ -139,9 +139,9 @@ export default function Upload() {
         partNumber += 1;
       }
 
-      return parts;
+      return true;
     } catch (error) {
-      console.log('Oooops something went wrong');
+      localStorage.setItem('upload-fail', startUploadId);
 
       const updatedStatus: FileUploadProps = {
         ...fileUpload!,
@@ -154,15 +154,10 @@ export default function Upload() {
     }
   }
 
-  const CompleteUpload = async (
-    parts: Array<{ ETag: string; PartNumber: number }>,
-    startUploadId: string,
-    id: string
-  ) => {
+  const CompleteUpload = async (startUploadId: string, id: string) => {
     const response = await axios.post('/api/complete-upload', {
       filename: fileUpload?.file.name,
       uploadId: startUploadId,
-      parts,
       id
     });
 
@@ -205,11 +200,11 @@ export default function Upload() {
 
     if (startUploadId) {
       // Upload parts
-      const parts = await UploadParts(startUploadId, id);
+      const uploadedParts = await UploadParts(startUploadId, id);
 
-      if (parts) {
+      if (uploadedParts) {
         // Complete the multipart upload
-        await CompleteUpload(parts, startUploadId, id);
+        await CompleteUpload(startUploadId, id);
       }
     }
 
@@ -222,33 +217,54 @@ export default function Upload() {
 
   const handleResume = async () => {
     const response = await axios.post('/api/check-file-progress', {
-      uploadId
+      uploadId: localStorage.getItem('upload-fail')
     });
 
     const fileData = response.data;
 
-    const chunkSize = 10 * 1024 * 1024;
-    const initialOffset = (Number(fileData.partNumber) - 1) * chunkSize;
-    const initialPartNumber = Number(fileData.partNumber);
+    const initialOffset = (Number(fileData.etags.length) - 1) * chunkSize;
+    const initialPartNumber = Number(fileData.etags.length);
 
     setUploading(true);
+    setFileUpload({ ...fileUpload, status: 'loading' });
 
     if (fileData.uploadId) {
-      const parts = await UploadParts(
+      const uploadedParts = await UploadParts(
         fileData.uploadId,
         fileId,
         initialOffset,
         initialPartNumber
       );
 
-      if (parts) {
+      if (uploadedParts) {
         // Complete the multipart upload
-        await CompleteUpload(parts, fileData.uploadId, fileId);
+        await CompleteUpload(fileData.uploadId, fileId);
+        localStorage.removeItem('upload-fail');
       }
     }
 
     setUploading(false);
   };
+
+  useEffect(() => {
+    async function checkUploadFail() {
+      if (localStorage.getItem('upload-fail')) {
+        const response = await axios.post('/api/check-file-progress', {
+          uploadId: localStorage.getItem('upload-fail')
+        });
+
+        const fileData = response.data;
+        const progress =
+          ((fileData.etags.length - 1) / fileData.totalChunks) * 100;
+        setUploadProgress(progress);
+        setBytesLoaded((fileData.etags.length - 1) * chunkSize);
+        setFileId(uploadCounty.fileData.id);
+        setFileUpload({ ...fileUpload, status: 'failed' });
+      }
+    }
+
+    checkUploadFail();
+  }, []);
 
   return (
     <>
