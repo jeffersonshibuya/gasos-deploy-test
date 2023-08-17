@@ -7,6 +7,7 @@ import DownloadModal from '@/components/modals/DownloadModal';
 import LoginModal from '@/components/modals/LoginModal';
 import RejectModal from '@/components/modals/RejectModal';
 import UploadFolderModal from '@/components/modals/UploadFolderModal';
+import UploadProgressModal from '@/components/modals/UploadProgressModal';
 import { UserNav } from '@/components/UserNav';
 
 import getCurrentUser from '@/actions/getCurrentUser';
@@ -31,6 +32,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <LoginModal />
         <DownloadModal />
+        <UploadProgressModal />
         <RejectModal />
         <UploadFolderModal />
         <ToasterProvider />

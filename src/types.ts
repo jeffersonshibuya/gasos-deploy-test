@@ -31,6 +31,8 @@ export interface FilesDBResponseData {
   isPublic: boolean;
   reason?: string;
   uploadId: string;
+  totalChunks: number;
+  totalPartsUploaded?: number;
 }
 
 export interface FilesResponseDataGrouped {

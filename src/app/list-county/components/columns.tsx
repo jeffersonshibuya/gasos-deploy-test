@@ -3,6 +3,7 @@
 import DownloadAction from './actions/download-action';
 import ResumeUploadAction from './actions/resume-upload-action';
 import UploadAction from './actions/upload-action';
+import UploadProgressAction from './actions/upload-progress-action';
 
 import { electionTypes } from '@/data/filesData';
 import { FilesDBResponseData } from '@/types';
@@ -101,6 +102,7 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
             localStorage.getItem('upload-fail') === row.original.uploadId && (
               <ResumeUploadAction data={row.original} />
             )}
+          <UploadProgressAction data={row.original} />
           <DownloadAction data={row.original} />
         </div>
       );
