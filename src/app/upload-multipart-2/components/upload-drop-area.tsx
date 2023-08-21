@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 'use client';
 
 import Dropzone, { FileRejection } from 'react-dropzone';
@@ -7,10 +8,12 @@ interface UploadDropAreaProps {
     acceptedFiles: File[],
     rejectedFiles: FileRejection[]
   ) => void;
+  isDisabled: boolean;
 }
 
 export default function UploadDropArea({
-  handleDropFiles
+  handleDropFiles,
+  isDisabled
 }: UploadDropAreaProps) {
   return (
     <>
@@ -20,12 +23,15 @@ export default function UploadDropArea({
         }
         multiple={false}
         accept={{ 'application/json': ['.zip'] }}
+        disabled={isDisabled}
       >
         {({ getRootProps, getInputProps }) => (
           <div
             {...getRootProps()}
-            className="mt-1 flex cursor-pointer justify-center rounded-md 
-              border-2  border-dashed border-gray-300 px-6 pb-6 pt-5 transition duration-300 hover:bg-gray-100"
+            className={`${isDisabled && 'opacity-70 cursor-not-allowed bg-gray-50'} rounded-md order-2 mt-1 flex 
+              cursor-pointer justify-center border border-dashed border-gray-300 px-6 
+              pb-6 pt-5 transition duration-300 hover:bg-gray-100
+            `}
           >
             <div className="space-y-1 text-center">
               <svg
@@ -47,7 +53,7 @@ export default function UploadDropArea({
                   htmlFor="file-upload"
                   className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
                 >
-                  <span>Select files</span>
+                  <span>Select file</span>
 
                   <input {...getInputProps()} aria-label="drop-input" />
                 </label>

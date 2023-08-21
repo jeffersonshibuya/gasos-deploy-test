@@ -23,56 +23,15 @@ interface FilesListProps {
 export default function FilesPublicList({ files }: FilesListProps) {
   const router = useRouter();
   const [filesData, setFilesData] = useState<FilesDBResponseData[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string[]>([])
-  const [isLoading, setIsLoading] = useState(false);
-
-  const downloadImage = async (imageUrl: string, fileName: string) => {
-    // Fetch the image as a Blob
-    const response = await fetch(imageUrl);
-    const blob = await response.blob();
-
-    // Create a temporary URL for the Blob
-    const url = URL.createObjectURL(blob);
-
-    // Create a new anchor element
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = fileName;
-    anchor.style.display = 'none';
-
-    // Append the anchor to the DOM
-    document.body.appendChild(anchor);
-
-    // Simulate a click event to trigger the download
-    anchor.click();
-
-    // Clean up
-    document.body.removeChild(anchor);
-    URL.revokeObjectURL(url);
-  };
-
-  const approveFile = async (folderName: string, fileName: string) => {
-    setIsLoading(true);
-    await axios.post('/api/approve', {
-      folderName,
-      fileName
-    });
-    setIsLoading(false);
-    router.refresh();
-  };
 
   useEffect(() => {
     setFilesData(files);
   }, [files]);
 
-  if (filesData.length === 0) {
-    return <EmptyState title="No files yet!" subtitle="No files uploaded" />;
-  }
-
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title="Files Uploaded" />
+        <Heading title="Public Files" />
         <Button
           variant="outline"
           onClick={() => router.refresh()}
@@ -82,7 +41,7 @@ export default function FilesPublicList({ files }: FilesListProps) {
         </Button>
       </div>
       <div className='my-4'>
-        <FilesDataTable columns={filesColumns} data={files} />
+        <FilesDataTable columns={filesColumns} data={filesData} />
       </div>
     </>
   );

@@ -18,7 +18,7 @@ export default function ResumeUploadAction({
 
   const handleUpload = async () => {
     uploadCounty.setFileData(data);
-    router.push(`/upload-multipart-2?id=${data.id}`);
+    router.push(`/upload-multipart-2?county=${data.county}`);
   };
 
   return (

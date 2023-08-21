@@ -75,14 +75,16 @@ const updateDynamoDBItem = async (fileId: string) => {
   };
 
   const command = new UpdateItemCommand(params);
-  await client.send(command);
+  const response = await client.send(command);
+
+  return response;
 };
 
 export async function POST(request: Request) {
   const { fileId, folder, fileName } = await request.json();
 
   try {
-    await updateS3ObjectKey(folder, fileName);
+    // await updateS3ObjectKey(folder, fileName);
     const response = await updateDynamoDBItem(fileId);
 
     // send email confirmation
@@ -108,11 +110,13 @@ export async function POST(request: Request) {
     };
 
     const commandSES = new SendEmailCommand(inputSES);
-    await SESClient.send(commandSES);
+    // await SESClient.send(commandSES);
+
+    console.log(response);
 
     return NextResponse.json(response);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: 'error' });
+    return NextResponse.json(error);
   }
 }

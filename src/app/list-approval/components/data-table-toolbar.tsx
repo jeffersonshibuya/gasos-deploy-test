@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
-import { statuses } from './data/statuses';
 
+import { counties, statuses, years } from '@/data/filesData';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { Table } from '@tanstack/react-table';
 
@@ -32,6 +32,20 @@ export default function DataTableToolbar<TData>({
             column={table.getColumn('status')}
             title="Status"
             options={statuses}
+          />
+        )}
+        {table.getColumn('county') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('county')}
+            title="County"
+            options={counties}
+          />
+        )}
+        {table.getColumn('year') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('year')}
+            title="Year"
+            options={years()}
           />
         )}
         {isFiltered && (

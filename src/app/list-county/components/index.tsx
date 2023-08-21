@@ -1,18 +1,20 @@
 /* eslint-disable prettier/prettier */
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import Select from 'react-select';
 
-import EmptyState from '@/components/EmptyState';
 import Heading from '@/components/Heading';
 import { Button } from '@/components/ui/button';
 
 import { filesColumns } from './columns';
 import FilesDataTable from './data-table';
 
+import { counties } from '@/data/filesData';
 import useUploadCounty from '@/hooks/useUploadCounty';
 import { FilesDBResponseData } from '@/types';
+import axios from 'axios';
 import { ImagePlusIcon, RefreshCcw } from 'lucide-react';
 
 interface FilesListProps {
@@ -24,31 +26,41 @@ export default function FilesCountyList({ files }: FilesListProps) {
   const uploadCounty = useUploadCounty()
 
   const [filesData, setFilesData] = useState<FilesDBResponseData[]>([]);
+  const [countySelected, setCountySelected] = useState('Polk')
 
   const handleNewUpload = () => {
     const data = {} as FilesDBResponseData
 
     uploadCounty.setFileData({
       ...data,
-      county: 'county_2'
+      county: countySelected
     })
 
-    router.push(`/uploads-preview?id=${'1'}`)
+    router.push(`/upload-multipart-2?county=${countySelected}`)
+  }
+
+  function handleChangeCounty(item: { label: string; value: string; }) {
+    setFilesData(files.filter(file => file.county === item.value))
+    setCountySelected(item.value)
   }
 
   useEffect(() => {
-    setFilesData(files);
+    setFilesData(files.filter(file => file.county === 'Polk'));
   }, [files]);
-
-  if (filesData.length === 0) {
-    return <EmptyState title="No files yet!" subtitle="No files uploaded" />;
-  }
 
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title="Files Uploaded" />
+        <Heading title={`County Files - ${countySelected}`} />
+
         <div className='flex items-center gap-2'>
+          <Select
+            className='w-64'
+            isClearable={false}
+            options={counties}
+            value={{ label: countySelected, value: countySelected }}
+            onChange={(item) => handleChangeCounty(item as any)}
+          />
           <Button
             size={'sm'}
             className="group bg-indigo-200 transition hover:bg-indigo-300 flex gap-1 text-indigo-500 font-semibold"
@@ -67,7 +79,7 @@ export default function FilesCountyList({ files }: FilesListProps) {
         </div>
       </div>
       <div className='my-4'>
-        <FilesDataTable columns={filesColumns} data={files} />
+        <FilesDataTable columns={filesColumns} data={filesData} />
       </div>
     </>
   );

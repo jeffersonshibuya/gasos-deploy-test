@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
 
-import { electionTypes, years } from '@/data/filesData';
+import { countyStatuses, electionTypes, years } from '@/data/filesData';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { Table } from '@tanstack/react-table';
 
@@ -27,6 +27,13 @@ export default function DataTableToolbar<TData>({
           onChange={(event) => table.setGlobalFilter(event.target.value)}
           className="h-8 w-full md:w-[350px]"
         />
+        {table.getColumn('status') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('status')}
+            title="Status"
+            options={countyStatuses}
+          />
+        )}
         {table.getColumn('electionType') && (
           <DataTableFacetedFilter
             column={table.getColumn('electionType')}

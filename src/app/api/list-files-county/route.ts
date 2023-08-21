@@ -15,13 +15,19 @@ const ddbClient = new DynamoDBClient({
   }
 });
 
-export async function POST() {
+interface IParams {
+  county?: string;
+}
+
+export async function POST(request: Request) {
+  // const { county } = await request.json();
+
   const input = {
-    TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
-    FilterExpression: 'county = :countyValue',
-    ExpressionAttributeValues: {
-      ':countyValue': { S: 'county_1' }
-    }
+    TableName: process.env.AWS_DYNAMODB_TABLE_NAME
+    // FilterExpression: 'county = :countyValue',
+    // ExpressionAttributeValues: {
+    //   ':countyValue': { S: county }
+    // }
   };
 
   try {

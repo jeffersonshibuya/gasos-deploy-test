@@ -30,6 +30,7 @@ import {
 
 interface UploadTableProps {
   fileUpload: FileUploadProps;
+  fileStatus: FileStatus;
   handleRemoveFile: (fileName: string) => void;
   handleResume: () => void;
   uploadProgress: number;
@@ -37,6 +38,7 @@ interface UploadTableProps {
 }
 
 export function UploadTable({
+  fileStatus,
   fileUpload,
   handleRemoveFile,
   uploadProgress,
@@ -76,11 +78,11 @@ export function UploadTable({
           <TableBody>
             <TableRow
               // eslint-disable-next-line prettier/prettier
-              className={`${fileUpload.status === 'waiting-approval' && 'bg-green-500/10'}`}
+              className={`${fileStatus === 'waiting-approval' && 'bg-green-500/10'}`}
             >
               <TableCell>
                 <div className="text-neutral-500">
-                  {loadStatusIcon(fileUpload.status)}
+                  {loadStatusIcon(fileStatus)}
                 </div>
               </TableCell>
               <TableCell>
@@ -90,7 +92,7 @@ export function UploadTable({
                     {fileUpload.file.name}
                   </p>
                   <p className="flex items-center gap-2 text-sm font-bold capitalize">
-                    {fileUpload.status}
+                    {fileStatus}
                   </p>
                 </div>
               </TableCell>
@@ -129,7 +131,7 @@ export function UploadTable({
                     <div className="flex items-center font-medium">Error</div>) */}
               </TableCell>
               <TableCell className="text-right">
-                {fileUpload.status !== 'loading' && (
+                {fileStatus !== 'loading' && (
                   <Button
                     variant={'ghost'}
                     onClick={() => handleRemoveFile(fileUpload.file.name)}
@@ -138,7 +140,7 @@ export function UploadTable({
                     <Trash size={18} />
                   </Button>
                 )}
-                {fileUpload.status === 'failed' && (
+                {fileStatus === 'failed' && (
                   <Button
                     variant={'ghost'}
                     onClick={() => handleResume()}

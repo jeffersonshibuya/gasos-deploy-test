@@ -22,13 +22,13 @@ export function MainNav({
 
   const routes = useMemo(
     () => [
-      {
-        icon: Gauge,
-        label: 'Dashboard',
-        active: pathName === '/',
-        href: '/',
-        show: true
-      },
+      // {
+      //   icon: Gauge,
+      //   label: 'Dashboard',
+      //   active: pathName === '/',
+      //   href: '/',
+      //   show: true
+      // },
       {
         icon: LayoutList,
         label: 'List - Public',
@@ -49,7 +49,7 @@ export function MainNav({
         active: pathName === '/list-approval',
         href: '/list-approval',
         show: true
-      },
+      }
       // {
       //   icon: ImagePlusIcon,
       //   label: 'Upload - .zip',
@@ -71,20 +71,20 @@ export function MainNav({
       //   href: '/upload',
       //   show: !!currentUser
       // },
-      {
-        icon: ImagePlusIcon,
-        label: 'Upload - Preview',
-        active: pathName === '/uploads-preview',
-        href: '/uploads-preview',
-        show: !!currentUser
-      },
-      {
-        icon: ImagePlusIcon,
-        label: 'Upload - Multipart',
-        active: pathName === '/upload-multipart-2',
-        href: '/upload-multipart-2',
-        show: !!currentUser
-      }
+      // {
+      //   icon: ImagePlusIcon,
+      //   label: 'Upload - Preview',
+      //   active: pathName === '/uploads-preview',
+      //   href: '/uploads-preview',
+      //   show: !!currentUser
+      // },
+      // {
+      //   icon: ImagePlusIcon,
+      //   label: 'Upload - Multipart',
+      //   active: pathName === '/upload-multipart-2',
+      //   href: '/upload-multipart-2',
+      //   show: !!currentUser
+      // }
       // {
       //   icon: ImagePlusIcon,
       //   label: 'Upload - Multipart',

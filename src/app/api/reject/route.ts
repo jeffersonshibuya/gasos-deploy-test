@@ -90,7 +90,7 @@ export async function POST(request: Request) {
   const { fileId, folder, fileName, reason } = await request.json();
 
   try {
-    await updateS3ObjectKey(folder, fileName);
+    // await updateS3ObjectKey(folder, fileName);
     const response = await updateDynamoDBItem(fileId, reason, folder);
 
     // send email confirmation

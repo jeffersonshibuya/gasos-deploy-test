@@ -4,8 +4,8 @@ import ApprovalAction from './actions/approval-action';
 import DownloadAction from './actions/download-action';
 import RejectionAction from './actions/rejection-action';
 import UnpublishAction from './actions/unpublish-action';
-import { statuses } from './data/statuses';
 
+import { counties, electionTypes, statuses, years } from '@/data/filesData';
 import { FilesDBResponseData } from '@/types';
 import { formatBytes } from '@/utils/format-bytes';
 import { ColumnDef } from '@tanstack/react-table';
@@ -19,20 +19,55 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     }
   },
   {
-    accessorKey: 'file',
-    header: 'File'
-  },
-  {
     accessorKey: 'county',
-    header: 'County'
+    header: 'County',
+    cell: ({ row }) => {
+      const county = counties.find(
+        (county) => county.value === row.getValue('county')
+      );
+
+      if (!county) {
+        return null;
+      }
+
+      return (
+        <div className="flex w-full items-center">
+          <span>{county.label}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     accessorKey: 'electionType',
-    header: 'Election Type'
+    header: 'Election Type',
+    cell: ({ row }) => {
+      const item = electionTypes.find(
+        (electionType) => electionType.value === row.getValue('electionType')
+      );
+
+      if (!item) {
+        return null;
+      }
+
+      return (
+        <div className="flex w-full items-center">
+          <span>{item.label}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     accessorKey: 'year',
-    header: 'Year'
+    header: 'Year',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     accessorKey: 'updated_at',

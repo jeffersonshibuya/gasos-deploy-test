@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import {
-  DynamoDBClient,
-  PutItemCommand,
-  UpdateItemCommand
-} from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import {
   CreateMultipartUploadCommand,
   S3Client,
@@ -29,60 +25,64 @@ const ddbClient = new DynamoDBClient({
 });
 
 export async function POST(request: Request) {
-  const {
-    filename,
-    folder,
-    year,
-    electionType,
-    size,
-    county,
-    id,
-    totalChunks
-  } = await request.json();
+  try {
+    const {
+      fileName,
+      originalFile,
+      year,
+      electionType,
+      size,
+      county,
+      id,
+      totalChunks
+    } = await request.json();
 
-  const s3Response = await s3Client.send(
-    new CreateMultipartUploadCommand({
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: filename
-    })
-  );
+    const s3Response = await s3Client.send(
+      new CreateMultipartUploadCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: fileName
+      })
+    );
 
-  const item = {
-    id,
-    file: filename,
-    folder,
-    status: 'uploading',
-    isPublic: false,
-    year,
-    electionType,
-    size,
-    county,
-    totalChunks,
-    uploadId: s3Response.UploadId,
-    created_at: new Date().toISOString()
-  };
+    const item = {
+      id,
+      file: fileName,
+      originalFile,
+      status: 'uploading',
+      isPublic: false,
+      year,
+      electionType,
+      size,
+      county,
+      totalChunks,
+      uploadId: s3Response.UploadId,
+      created_at: new Date().toISOString()
+    };
 
-  const marshallItem = marshall(item);
+    const marshallItem = marshall(item);
 
-  const input = {
-    TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
-    Item: marshallItem
-  };
+    const input = {
+      TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+      Item: marshallItem
+    };
 
-  const command = new PutItemCommand(input);
-  await ddbClient.send(command);
+    const command = new PutItemCommand(input);
+    await ddbClient.send(command);
 
-  return NextResponse.json(s3Response);
+    return NextResponse.json(s3Response);
+  } catch (error) {
+    console.log(error);
+    return NextResponse.error();
+  }
 }
 
 export async function PUT(request: Request) {
   try {
     const data = await request.formData();
     const body = data.get('body') as File;
-    const filename = data.get('filename');
+    const fileName = data.get('fileName');
     const uploadId = data.get('uploadId');
     const partNumber = data.get('partNumber') as string;
-    const id = data.get('id') as string;
 
     const bytes = await body.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -90,7 +90,7 @@ export async function PUT(request: Request) {
     const uploadPartResponse = await s3Client.send(
       new UploadPartCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: String(filename),
+        Key: String(fileName),
         PartNumber: Number(partNumber),
         UploadId: String(uploadId),
         Body: buffer

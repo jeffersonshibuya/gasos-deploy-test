@@ -33,7 +33,10 @@ export default function ApprovalAction({
       folder,
       fileName
     });
-    if (response.data.$metadata.httpStatusCode !== 200) {
+
+    console.log(response.data);
+
+    if (response.data.$metadata?.httpStatusCode !== 200) {
       toast.error('Something went wrong. Please try again in a few minutes');
     } else {
       toast.success('File Approved');

@@ -1,16 +1,20 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
-import UploadDropArea from './upload-drop-area';
+import Loader from '@/components/Loader';
+
 import UploadForm from './upload-form';
 import { UploadTable } from './upload-table';
 
 import useUploadCounty from '@/hooks/useUploadCounty';
+import { FilesDBResponseData } from '@/types';
 import { fadeIn, itemVariants } from '@/utils/animation';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { AlertTriangle, RefreshCcw } from 'lucide-react';
 
 export type FileStatus =
   | 'pending'
@@ -29,6 +33,7 @@ export type FileUploadProps = {
 
 export default function Upload() {
   const uploadCounty = useUploadCounty();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const [uploading, setUploading] = useState(false);
@@ -38,19 +43,30 @@ export default function Upload() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [bytesLoaded, setBytesLoaded] = useState(0);
   const [fileId, setFileId] = useState('');
+  const [fileStatus, setFileStatus] = useState<FileStatus>('pending');
+  const [fileFailed, setFileFailed] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const chunkSize = 10 * 1024 * 1024;
 
-  const handleDrop = useCallback(async (acceptedFiles: File[]) => {
-    setFileUpload({
-      file: acceptedFiles[0],
-      status: 'pending'
-    });
-  }, []);
+  const handleDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (fileStatus === 'failed' && acceptedFiles[0].name !== fileFailed) {
+        toast.error(`Please select the correct file: ${fileFailed}`);
+      } else {
+        setFileUpload({
+          file: acceptedFiles[0],
+          status: fileStatus
+        });
+      }
+    },
+    [fileFailed, fileStatus]
+  );
 
   async function handleStartUpload(
     id: string,
-    folder: string,
+    fileName: string,
+    originalFile: string,
     year: string,
     electionType: string,
     county: string
@@ -59,9 +75,9 @@ export default function Upload() {
     const totalChunks = Math.ceil((fileUpload?.file?.size || 1) / chunkSize);
 
     const response = await axios.post('/api/upload-multipart', {
-      filename: fileUpload?.file.name,
-      folder: folder.trim(),
+      fileName,
       year,
+      originalFile,
       electionType,
       size: fileUpload?.file.size,
       county,
@@ -74,12 +90,7 @@ export default function Upload() {
       return null;
     }
 
-    const updatedStatus: FileUploadProps = {
-      ...fileUpload!,
-      status: 'loading'
-    };
-
-    setFileUpload(updatedStatus);
+    setFileStatus('loading');
 
     const uploadIdResponse = response.data.UploadId;
 
@@ -89,6 +100,7 @@ export default function Upload() {
   async function UploadParts(
     startUploadId: string,
     id: string,
+    fileName: string,
     initialOffset = 0,
     initialPartNumber = 1
   ) {
@@ -114,7 +126,7 @@ export default function Upload() {
 
         const formData = new FormData();
         formData.append('body', part);
-        formData.append('filename', fileUpload?.file.name || '');
+        formData.append('fileName', fileName);
         formData.append('uploadId', startUploadId);
         formData.append('partNumber', String(partNumber));
         formData.append('id', String(id));
@@ -141,41 +153,34 @@ export default function Upload() {
 
       return true;
     } catch (error) {
-      localStorage.setItem('upload-fail', startUploadId);
-
-      const updatedStatus: FileUploadProps = {
-        ...fileUpload!,
-        status: 'failed'
-      };
-
-      setFileUpload(updatedStatus);
+      localStorage.setItem(`upload-fail-${id}`, startUploadId);
+      setFileId(id);
+      setFileStatus('failed');
 
       return null;
     }
   }
 
-  const CompleteUpload = async (startUploadId: string, id: string) => {
+  const CompleteUpload = async (
+    startUploadId: string,
+    id: string,
+    fileName: string
+  ) => {
     const response = await axios.post('/api/complete-upload', {
-      filename: fileUpload?.file.name,
       uploadId: startUploadId,
-      id
+      id,
+      fileName
     });
 
     setUploadProgress(100);
     setBytesLoaded(fileUpload?.file.size || 0);
+    setFileStatus(response.data.status);
 
-    const updatedStatus: FileUploadProps = {
-      ...fileUpload!,
-      status: response.data.status
-    };
-
-    setFileUpload((prevState) => {
-      return updatedStatus;
-    });
+    router.push('/list-approval');
   };
 
   const handleUpload = async (
-    folder: string,
+    fileName: string,
     year: string,
     electionType: string,
     county: string
@@ -185,14 +190,17 @@ export default function Upload() {
       return;
     }
 
+    const fileNameFormatted = fileName + '.zip';
+
     setUploading(true);
-    const id = `${year}-${county}-${electionType}`.trim().replace(/\s/g, '_');
+    const id = `${year}-${electionType}-${county}`.trim().replace(/\s/g, '_');
     setFileId(id);
 
     // Start Upload
     const startUploadId = await handleStartUpload(
       id,
-      folder,
+      fileNameFormatted,
+      fileUpload?.file.name,
       year,
       electionType,
       county
@@ -200,11 +208,15 @@ export default function Upload() {
 
     if (startUploadId) {
       // Upload parts
-      const uploadedParts = await UploadParts(startUploadId, id);
+      const uploadedParts = await UploadParts(
+        startUploadId,
+        id,
+        fileNameFormatted
+      );
 
       if (uploadedParts) {
         // Complete the multipart upload
-        await CompleteUpload(startUploadId, id);
+        await CompleteUpload(startUploadId, id, fileNameFormatted);
       }
     }
 
@@ -217,7 +229,7 @@ export default function Upload() {
 
   const handleResume = async () => {
     const response = await axios.post('/api/check-file-progress', {
-      uploadId: localStorage.getItem('upload-fail')
+      uploadId: localStorage.getItem(`upload-fail-${fileId}`)
     });
 
     const fileData = response.data;
@@ -226,63 +238,118 @@ export default function Upload() {
     const initialPartNumber = Number(fileData.etags.length);
 
     setUploading(true);
-    setFileUpload({ ...fileUpload, status: 'loading' });
+    setFileStatus('loading');
 
     if (fileData.uploadId) {
       const uploadedParts = await UploadParts(
         fileData.uploadId,
         fileId,
+        fileData.file,
         initialOffset,
         initialPartNumber
       );
 
       if (uploadedParts) {
         // Complete the multipart upload
-        await CompleteUpload(fileData.uploadId, fileId);
-        localStorage.removeItem('upload-fail');
+        await CompleteUpload(fileData.uploadId, fileId, fileData.file);
+        localStorage.removeItem(`upload-fail-${fileId}`);
       }
     }
 
     setUploading(false);
   };
 
-  useEffect(() => {
-    async function checkUploadFail() {
-      if (localStorage.getItem('upload-fail')) {
-        const response = await axios.post('/api/check-file-progress', {
-          uploadId: localStorage.getItem('upload-fail')
-        });
+  const checkUploadFail = useCallback(async () => {
+    setIsLoading(true);
+    if (localStorage.getItem(`upload-fail-${uploadCounty.fileData.id}`)) {
+      const response = await axios.post('/api/check-file-progress', {
+        uploadId: localStorage.getItem(
+          `upload-fail-${uploadCounty.fileData.id}`
+        )
+      });
 
-        const fileData = response.data;
-        const progress =
-          ((fileData.etags.length - 1) / fileData.totalChunks) * 100;
-        setUploadProgress(progress);
-        setBytesLoaded((fileData.etags.length - 1) * chunkSize);
-        setFileId(uploadCounty.fileData.id);
-        setFileUpload({ ...fileUpload, status: 'failed' });
-      }
+      const fileData = response.data;
+      uploadCounty.setFileData(response.data);
+
+      const progress =
+        ((fileData.etags.length - 1) / fileData.totalChunks) * 100;
+      setUploadProgress(progress);
+      setBytesLoaded((fileData.etags.length - 1) * chunkSize);
+      setFileFailed(fileData.originalFile);
+      setFileStatus('failed');
+      setFileId(fileData.id);
     }
+    setIsLoading(false);
+  }, [chunkSize, uploadCounty]);
 
-    checkUploadFail();
-  }, []);
+  useEffect(() => {
+    const countyId = searchParams?.get('county');
+    if (!countyId) {
+      uploadCounty.setFileData({} as FilesDBResponseData);
+      setFileStatus('pending');
+      setUploadProgress(0);
+      setBytesLoaded(0);
+      setFileId('');
+      setFileFailed('');
+      setFileUpload({} as FileUploadProps);
+    } else {
+      checkUploadFail();
+    }
+  }, [searchParams]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
-      <UploadDropArea handleDropFiles={handleDrop} />
+      {fileFailed && (
+        <div className="mb-4 border-l-4 border-yellow-400 bg-yellow-50 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <AlertTriangle
+                className="h-5 w-5 text-yellow-400"
+                aria-hidden="true"
+              />
+            </div>
+            <div className="ml-3">
+              <p className="flex gap-3 text-sm text-yellow-700">
+                <span className="text-md font-semibold">File failed!</span>
+                <span className="flex text-yellow-700 hover:text-yellow-600">
+                  {!fileUpload.file ? (
+                    <span>
+                      Please select the same file:{' '}
+                      <strong className="mx-1">{fileFailed}</strong>
+                    </span>
+                  ) : (
+                    <span className="flex items-center ">
+                      Please click on this icon{' '}
+                      <RefreshCcw size={16} className="mx-1" />{' '}
+                    </span>
+                  )}{' '}
+                  in order to initiate a retry and proceed with the upload
+                  process.
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <UploadForm
+        handleUpload={handleUpload}
+        cancelUpload={() => console.log('cancel')}
+        countyUploadData={uploadCounty.fileData}
+        isLoading={uploading}
+        handleDropFiles={handleDrop}
+        isDisabled={!!fileUpload.file}
+      />
+
       {fileUpload?.file && (
         <motion.div variants={fadeIn} initial="hidden" animate="show">
           <motion.div variants={itemVariants} className="my-4">
-            {fileUpload.status !== 'waiting-approval' && (
-              <UploadForm
-                handleUpload={handleUpload}
-                cancelUpload={() => console.log('cancel')}
-                countyUploadData={uploadCounty.fileData}
-                isLoading={uploading}
-              />
-            )}
-          </motion.div>
-          <motion.div variants={itemVariants} className="my-4">
             <UploadTable
+              fileStatus={fileStatus}
               fileUpload={fileUpload}
               handleRemoveFile={handleRemoveFile}
               uploadProgress={uploadProgress}

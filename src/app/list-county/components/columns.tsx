@@ -5,7 +5,7 @@ import ResumeUploadAction from './actions/resume-upload-action';
 import UploadAction from './actions/upload-action';
 import UploadProgressAction from './actions/upload-progress-action';
 
-import { electionTypes } from '@/data/filesData';
+import { countyStatuses, electionTypes } from '@/data/filesData';
 import { FilesDBResponseData } from '@/types';
 import { formatBytes } from '@/utils/format-bytes';
 import { ColumnDef } from '@tanstack/react-table';
@@ -18,23 +18,59 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
       return <span>{row.index + 1}</span>;
     }
   },
-  {
-    accessorKey: 'file',
-    header: 'File'
-  },
+  // {
+  //   accessorKey: 'file',
+  //   header: 'File'
+  // },
   {
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
+      const status = countyStatuses.find(
+        (status) => status.value === row.getValue('status')
+      );
+
+      if (!status) {
+        return null;
+      }
+
       return (
-        <div className="flex w-full flex-col items-start">
-          <span>{row.original.status}</span>
-          {row.original.status === 'rejected' && (
-            <span className="block">{row.original.reason}</span>
+        <div className="flex w-full items-center">
+          {status.icon && (
+            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
+          <div className="flex flex-col">
+            <span>{row.original.status}</span>
+            {typeof localStorage !== 'undefined' &&
+              localStorage.getItem(`upload-fail-${row.original.id}`) && (
+                <span>Failed</span>
+              )}
+
+            {row.original.status === 'rejected' && (
+              <span>{row.original.reason}</span>
+            )}
+          </div>
         </div>
       );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
     }
+    // cell: ({ row }) => {
+    //   return (
+    //     <div className="flex w-full flex-col items-start">
+    //       {localStorage.getItem('upload-fail') === row.original.uploadId ? (
+    //         <span>Failed</span>
+    //       ) : (
+    //         <span>{row.original.status}</span>
+    //       )}
+
+    //       {row.original.status === 'rejected' && (
+    //         <span className="block">{row.original.reason}</span>
+    //       )}
+    //     </div>
+    //   );
+    // }
   },
   {
     accessorKey: 'electionType',
@@ -98,8 +134,8 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
           {row.original.status === 'rejected' && (
             <UploadAction data={row.original} />
           )}
-          {localStorage.getItem('upload-fail') &&
-            localStorage.getItem('upload-fail') === row.original.uploadId && (
+          {typeof localStorage !== 'undefined' &&
+            localStorage?.getItem(`upload-fail-${row.original.id}`) && (
               <ResumeUploadAction data={row.original} />
             )}
           <UploadProgressAction data={row.original} />

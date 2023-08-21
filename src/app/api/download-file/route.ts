@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       s3Client,
       new GetObjectCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: `${isPublic ? 'public/' : ''}${folder}/${fileName}`
+        Key: `${fileName}`
       }),
       { expiresIn: 60 }
     );

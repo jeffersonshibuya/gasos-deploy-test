@@ -20,10 +20,9 @@ export default function SelectCounty({
   return (
     <>
       <Select
-        isSearchable={false}
         isClearable={false}
         isDisabled={isDisabled}
-        options={counties()}
+        options={counties}
         value={value}
         onChange={(item) => handleSelectCounty(item || ({} as any))}
       />

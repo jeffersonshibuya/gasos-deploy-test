@@ -28,7 +28,7 @@ const ddbClient = new DynamoDBClient(credentials);
 const SESClient = new SESv2Client(credentials);
 
 export async function POST(request: Request) {
-  const { filename, uploadId, id } = await request.json();
+  const { fileName, uploadId, id } = await request.json();
 
   try {
     // get upload parts
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     const completeUploadResponse = await s3Client.send(
       new CompleteMultipartUploadCommand({
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: filename,
+        Key: fileName,
         UploadId: uploadId,
         MultipartUpload: { Parts: parts }
       })
@@ -106,8 +106,8 @@ export async function POST(request: Request) {
         }
       };
 
-      // const commandSES = new SendEmailCommand(inputSES);
-      // await SESClient.send(commandSES);
+      const commandSES = new SendEmailCommand(inputSES);
+      await SESClient.send(commandSES);
 
       return NextResponse.json(unmarshall(response.Attributes || {}));
     }
