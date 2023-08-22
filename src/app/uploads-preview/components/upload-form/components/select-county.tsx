@@ -23,7 +23,7 @@ export default function SelectCounty({
         isSearchable={false}
         isClearable={false}
         isDisabled={isDisabled}
-        options={counties()}
+        options={counties}
         value={value}
         onChange={(item) => handleSelectCounty(item || ({} as any))}
       />
