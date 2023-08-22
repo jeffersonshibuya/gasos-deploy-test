@@ -51,6 +51,8 @@ export default function FilesCountyList({ files }: FilesListProps) {
   useEffect(() => {
     if (countySelected) {
       setFilesData(files.filter(file => file.county === countySelected));
+    } else {
+      setFilesData(files.filter(file => file.county === 'Polk'));
     }
   }, [files, countySelected]);
 
