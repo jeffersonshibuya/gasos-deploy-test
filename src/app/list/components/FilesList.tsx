@@ -19,31 +19,6 @@ export default function FilesList({ files }: FilesListProps) {
   const router = useRouter();
   const [filesData, setFilesData] = useState<any[]>([]);
 
-  const downloadImage = async (imageUrl: string, fileName: string) => {
-    // Fetch the image as a Blob
-    const response = await fetch(imageUrl);
-    const blob = await response.blob();
-
-    // Create a temporary URL for the Blob
-    const url = URL.createObjectURL(blob);
-
-    // Create a new anchor element
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = fileName;
-    anchor.style.display = 'none';
-
-    // Append the anchor to the DOM
-    document.body.appendChild(anchor);
-
-    // Simulate a click event to trigger the download
-    anchor.click();
-
-    // Clean up
-    document.body.removeChild(anchor);
-    URL.revokeObjectURL(url);
-  };
-
   useEffect(() => {
     setFilesData(files);
   }, [files]);
@@ -97,15 +72,17 @@ export default function FilesList({ files }: FilesListProps) {
                       <div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
                         <p className="whitespace-nowrap">
                           Last Update{' '}
-                          <time dateTime={data.updated_at}>
-                            {new Intl.DateTimeFormat('en-US', {
-                              year: 'numeric',
-                              month: '2-digit',
-                              day: '2-digit',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            }).format(new Date(Date.parse(data.updated_at)))}
-                          </time>
+                          {data.updated_at && (
+                            <time dateTime={data.updated_at}>
+                              {new Intl.DateTimeFormat('en-US', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              }).format(new Date(Date.parse(data.updated_at)))}
+                            </time>
+                          )}
                         </p>
                         <svg
                           viewBox="0 0 2 2"

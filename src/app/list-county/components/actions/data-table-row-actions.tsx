@@ -12,21 +12,13 @@ import {
   DropdownMenuShortcut
 } from '@/components/ui/dropdown-menu';
 
-import DownloadAction from './download-action';
-
 import useUploadCounty from '@/hooks/useUploadCounty';
 import useUploadProgressModal from '@/hooks/useUploadProgressModal';
 import { FilesDBResponseData } from '@/types';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 import axios from 'axios';
-import {
-  FileBarChart,
-  FileDown,
-  FileUp,
-  Info,
-  UploadCloud
-} from 'lucide-react';
+import { FileDown, Info, UploadCloud } from 'lucide-react';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;

@@ -5,7 +5,7 @@ import DownloadAction from './actions/download-action';
 import RejectionAction from './actions/rejection-action';
 import UnpublishAction from './actions/unpublish-action';
 
-import { counties, electionTypes, statuses, years } from '@/data/filesData';
+import { counties, electionTypes, statuses } from '@/data/filesData';
 import { cn } from '@/lib/utils';
 import { FilesDBResponseData } from '@/types';
 import { formatBytes } from '@/utils/format-bytes';

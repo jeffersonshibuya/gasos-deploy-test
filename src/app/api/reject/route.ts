@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server';
 
 import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
-import {
-  S3Client,
-  CopyObjectCommand,
-  DeleteObjectCommand
-} from '@aws-sdk/client-s3';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 
 const client = new DynamoDBClient({
@@ -16,13 +11,13 @@ const client = new DynamoDBClient({
   }
 });
 
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
-  }
-});
+// const s3Client = new S3Client({
+//   region: process.env.AWS_REGION,
+//   credentials: {
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+//   }
+// });
 
 const SESClient = new SESv2Client({
   region: process.env.AWS_REGION,
@@ -32,29 +27,29 @@ const SESClient = new SESv2Client({
   }
 });
 
-const updateS3ObjectKey = async (folder: string, fileName: string) => {
-  // Move files to public folder
-  const sourceKey = `${folder}/${fileName}`;
-  const destinationKey = `rejected/${sourceKey}`;
-  const bucketName = process.env.AWS_BUCKET_NAME;
+// const updateS3ObjectKey = async (folder: string, fileName: string) => {
+//   // Move files to public folder
+//   const sourceKey = `${folder}/${fileName}`;
+//   const destinationKey = `rejected/${sourceKey}`;
+//   const bucketName = process.env.AWS_BUCKET_NAME;
 
-  // Create a CopyObjectCommand to copy the file to the new location
-  const copyObjectParams = {
-    CopySource: `/${bucketName}/${sourceKey}`,
-    Bucket: bucketName,
-    Key: destinationKey
-  };
+//   // Create a CopyObjectCommand to copy the file to the new location
+//   const copyObjectParams = {
+//     CopySource: `/${bucketName}/${sourceKey}`,
+//     Bucket: bucketName,
+//     Key: destinationKey
+//   };
 
-  await s3Client.send(new CopyObjectCommand(copyObjectParams));
+//   await s3Client.send(new CopyObjectCommand(copyObjectParams));
 
-  // Delete the original file (if needed)
-  const deleteObjectParams = {
-    Bucket: bucketName,
-    Key: sourceKey
-  };
+//   // Delete the original file (if needed)
+//   const deleteObjectParams = {
+//     Bucket: bucketName,
+//     Key: sourceKey
+//   };
 
-  await s3Client.send(new DeleteObjectCommand(deleteObjectParams));
-};
+//   await s3Client.send(new DeleteObjectCommand(deleteObjectParams));
+// };
 
 const updateDynamoDBItem = async (
   fileId: string,
@@ -87,7 +82,7 @@ const updateDynamoDBItem = async (
 };
 
 export async function POST(request: Request) {
-  const { fileId, folder, fileName, reason } = await request.json();
+  const { fileId, folder, reason } = await request.json();
 
   try {
     // await updateS3ObjectKey(folder, fileName);

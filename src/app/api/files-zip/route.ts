@@ -1,16 +1,7 @@
 import { NextResponse } from 'next/server';
 
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import AdmZip from 'adm-zip';
-import { PassThrough, type Readable } from 'stream';
 
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
-  }
-});
 // Function to convert hierarchy to the desired format
 // Function to convert hierarchy to the desired format
 function convertHierarchy(node: any): any {
@@ -38,9 +29,6 @@ export async function POST(request: Request) {
     // Read the zip file's content without unzipping it
     const zip = new AdmZip(buffer);
     const zipEntries = zip.getEntries();
-
-    // Create an object to store folder names as keys and an array of file names as values
-    const folderContents: any = {};
 
     // // Create a hierarchical structure for folders and files
     const hierarchy = {};

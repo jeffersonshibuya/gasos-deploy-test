@@ -11,7 +11,7 @@ import {
 import FolderInfo from './folder-info';
 
 import { FilePreviewData } from '@/types';
-import { AlertCircle, File, Folder } from 'lucide-react';
+import { AlertCircle, Folder } from 'lucide-react';
 
 interface FolderPreviewCardProps {
   folderData: FilePreviewData;

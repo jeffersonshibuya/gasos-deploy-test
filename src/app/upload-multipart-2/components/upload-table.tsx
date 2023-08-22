@@ -22,7 +22,6 @@ import {
   File,
   Hourglass,
   Loader,
-  Paperclip,
   RefreshCcw,
   Trash,
   X

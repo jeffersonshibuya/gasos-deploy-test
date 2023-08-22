@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 import Heading from '@/components/Heading';
@@ -14,7 +14,6 @@ import FilesDataTable from './data-table';
 import { counties } from '@/data/filesData';
 import useUploadCounty from '@/hooks/useUploadCounty';
 import { FilesDBResponseData } from '@/types';
-import axios from 'axios';
 import { ImagePlusIcon, RefreshCcw } from 'lucide-react';
 
 interface FilesListProps {

@@ -6,9 +6,8 @@ import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components/ui/button';
 
-import { CheckCircledIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
-import { Link2Off, Loader2, Lock } from 'lucide-react';
+import { Link2Off, Loader2 } from 'lucide-react';
 
 interface UnpublishActionProps {
   id: string;

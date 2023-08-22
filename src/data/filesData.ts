@@ -1,6 +1,5 @@
 import {
   CheckCircledIcon,
-  QuestionMarkCircledIcon,
   CrossCircledIcon,
   UploadIcon,
   TimerIcon

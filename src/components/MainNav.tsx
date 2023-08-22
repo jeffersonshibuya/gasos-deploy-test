@@ -6,18 +6,14 @@ import { useMemo } from 'react';
 import MenuItem from './MenuItem';
 
 import { cn } from '@/lib/utils';
-import { Gauge, ImagePlusIcon, LayoutList } from 'lucide-react';
+import { LayoutList } from 'lucide-react';
 
 interface MainNavProps {
   className: string;
   currentUser?: any | null;
 }
 
-export function MainNav({
-  className,
-  currentUser = null,
-  ...props
-}: MainNavProps) {
+export function MainNav({ className, ...props }: MainNavProps) {
   const pathName = usePathname();
 
   const routes = useMemo(
@@ -93,7 +89,7 @@ export function MainNav({
       //   show: !!currentUser
       // }
     ],
-    [currentUser, pathName]
+    [pathName]
   );
 
   return (

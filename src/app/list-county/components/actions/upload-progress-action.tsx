@@ -1,12 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-
-import useDownloadModal from '@/hooks/useDownloadModal';
 import useUploadProgressModal from '@/hooks/useUploadProgressModal';
 import { FilesDBResponseData } from '@/types';
-import axios from 'axios';
-import { FolderDown, Percent } from 'lucide-react';
 
 export default function UploadProgressAction({
   data

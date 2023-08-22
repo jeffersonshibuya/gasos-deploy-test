@@ -2,16 +2,9 @@
 
 import { Button } from '@/components/ui/button';
 
-import { Row } from '@tanstack/react-table';
 import { Trash } from 'lucide-react';
 
-interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
-}
-
-export function DataTableRowActions<TData>({
-  row
-}: DataTableRowActionsProps<TData>) {
+export function DataTableRowActions() {
   return (
     <>
       <Button variant="ghost" className="flex h-8 w-8 p-0">

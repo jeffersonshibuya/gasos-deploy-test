@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -17,17 +16,14 @@ import {
 import { FileStatus, FileUploadProps } from '.';
 import FolderNameDialog from './folder-name-dialog';
 
-import useUploadFolderModal from '@/hooks/useUploadFolderModal';
 import { formatBytes } from '@/utils/format-bytes';
 import { formatSecondsToMinutes } from '@/utils/format-seconds-to-minutes';
-import { Label } from '@radix-ui/react-label';
 import {
   Ban,
   Check,
   Clock,
   File,
   Folder,
-  FolderEdit,
   Hourglass,
   Loader,
   Paperclip,

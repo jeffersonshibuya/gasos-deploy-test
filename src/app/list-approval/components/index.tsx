@@ -4,7 +4,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import EmptyState from '@/components/EmptyState';
 import Heading from '@/components/Heading';
 import { Button } from '@/components/ui/button';
 
@@ -49,7 +48,7 @@ export default function FilesListApproval({ files }: FilesListProps) {
         </div>
       </div >
       <div className='my-4'>
-        <FilesDataTable columns={filesColumns} data={files} />
+        <FilesDataTable columns={filesColumns} data={filesData} />
       </div>
     </>
   );

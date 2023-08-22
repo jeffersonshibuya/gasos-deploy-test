@@ -2,9 +2,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import EmptyState from '@/components/EmptyState';
 import Heading from '@/components/Heading';
 import { Button } from '@/components/ui/button';
 

@@ -295,6 +295,7 @@ export default function UploadsList() {
     if (!searchParams?.get('id')) {
       uploadCounty.setFileData({} as FilesDBResponseData)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
   if (isLoading) {

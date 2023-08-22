@@ -328,6 +328,7 @@ export default function Upload() {
     } else {
       checkUploadFail();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   if (isLoading) {
@@ -371,7 +372,6 @@ export default function Upload() {
 
       <UploadForm
         handleUpload={handleUpload}
-        cancelUpload={() => console.log('cancel')}
         countyUploadData={uploadCounty.fileData}
         isLoading={uploading}
         handleDropFiles={handleDrop}

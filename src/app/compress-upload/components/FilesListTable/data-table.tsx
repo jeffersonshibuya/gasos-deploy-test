@@ -27,7 +27,6 @@ import {
   getPaginationRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import { AnimatePresence, motion, useAnimate } from 'framer-motion';
 import { Database, Files, Trash } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {

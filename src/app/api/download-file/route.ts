@@ -12,7 +12,7 @@ const s3Client = new S3Client({
 });
 
 export async function POST(request: Request) {
-  const { fileName, folder, isPublic } = await request.json();
+  const { fileName } = await request.json();
 
   try {
     const signedUrl = await getSignedUrl(

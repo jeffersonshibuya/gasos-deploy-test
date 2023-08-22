@@ -1,14 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components/ui/button';
 
-import { CheckCircledIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
-import { FileDown, FolderDown, Loader2 } from 'lucide-react';
+import { FolderDown } from 'lucide-react';
 
 interface DownloadActionProps {
   folder: string;

@@ -13,8 +13,6 @@ import {
   TableRow
 } from '@/components/ui/table';
 
-import DataTableToolbar from './data-table-toolbar';
-
 import {
   ColumnDef,
   ColumnFiltersState,

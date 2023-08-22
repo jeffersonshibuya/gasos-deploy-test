@@ -26,7 +26,7 @@ import { FilesDBResponseData, SelectionDefaultType } from '@/types';
 import { fadeIn, itemVariants } from '@/utils/animation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
-import { Ban, FileUp, UploadCloud, X } from 'lucide-react';
+import { Ban, FileUp, UploadCloud } from 'lucide-react';
 import * as z from 'zod';
 
 interface UploadFormProps {
@@ -36,7 +36,6 @@ interface UploadFormProps {
     electionType: string,
     county: string
   ) => void;
-  cancelUpload: () => void;
   handleDropFiles: (
     acceptedFiles: File[],
     rejectedFiles: FileRejection[]
@@ -48,7 +47,6 @@ interface UploadFormProps {
 
 export default function UploadForm({
   handleUpload,
-  cancelUpload,
   countyUploadData,
   handleDropFiles,
   isDisabled,

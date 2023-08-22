@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import {
-  DynamoDBClient,
-  ScanCommand,
-  UpdateItemCommand
-} from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 const ddbClient = new DynamoDBClient({
@@ -15,11 +11,7 @@ const ddbClient = new DynamoDBClient({
   }
 });
 
-interface IParams {
-  county?: string;
-}
-
-export async function POST(request: Request) {
+export async function POST() {
   // const { county } = await request.json();
 
   const input = {

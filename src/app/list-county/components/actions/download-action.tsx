@@ -1,8 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-
-import useDownloadModal from '@/hooks/useDownloadModal';
 import { FilesDBResponseData } from '@/types';
 import axios from 'axios';
 import { FolderDown } from 'lucide-react';

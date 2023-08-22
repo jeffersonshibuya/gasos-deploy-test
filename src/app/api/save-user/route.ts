@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 
 import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { marshall } from '@aws-sdk/util-dynamodb';
-import { randomUUID } from 'crypto';
 
 const client = new DynamoDBClient({
   region: process.env.AWS_REGION,

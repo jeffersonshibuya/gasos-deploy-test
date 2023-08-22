@@ -1,18 +1,8 @@
-import { useEffect } from 'react';
-
 import { FileUploadProps } from '@/app/uploads/components';
 import EmptyState from '@/components/EmptyState';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 import { formatBytes } from '@/utils/format-bytes';
-import {
-  CheckCheck,
-  FileWarningIcon,
-  Hourglass,
-  Loader,
-  Trash2
-} from 'lucide-react';
-
 interface FilesListProps {
   files: FileUploadProps[];
 }

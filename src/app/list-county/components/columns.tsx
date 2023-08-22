@@ -1,9 +1,7 @@
 'use client';
 
 import { DataTableRowActions } from './actions/data-table-row-actions';
-import DownloadAction from './actions/download-action';
 import UploadAction from './actions/upload-action';
-import UploadProgressAction from './actions/upload-progress-action';
 
 import { countyStatuses, electionTypes } from '@/data/filesData';
 import { cn } from '@/lib/utils';
@@ -141,20 +139,5 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
   {
     id: 'actions',
     cell: ({ row }) => <DataTableRowActions row={row} />
-    // cell: ({ row }) => {
-    //   return (
-    //     <div className="flex items-center justify-end gap-1">
-    //       {row.original.status === 'rejected' && (
-    //         <UploadAction data={row.original} />
-    //       )}
-    //       {typeof localStorage !== 'undefined' &&
-    //         localStorage?.getItem(`upload-fail-${row.original.id}`) && (
-    //           <ResumeUploadAction data={row.original} />
-    //         )}
-    //       <UploadProgressAction data={row.original} />
-    //       <DownloadAction data={row.original} />
-    //     </div>
-    //   );
-    // }
   }
 ];

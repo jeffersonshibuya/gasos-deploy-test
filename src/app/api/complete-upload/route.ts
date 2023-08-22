@@ -1,17 +1,11 @@
 import { NextResponse } from 'next/server';
 
-import { FileResponse } from '@/types';
 import {
   DynamoDBClient,
-  PutItemCommand,
   ScanCommand,
   UpdateItemCommand
 } from '@aws-sdk/client-dynamodb';
-import {
-  CompleteMultipartUploadCommand,
-  CompletedPart,
-  S3Client
-} from '@aws-sdk/client-s3';
+import { CompleteMultipartUploadCommand, S3Client } from '@aws-sdk/client-s3';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
