@@ -11,6 +11,5 @@ export async function GetCountyFiles() {
   } catch (err) {
     console.error('Error on fetching List Files', err);
     throw err;
-    // throw new Error(JSON.stringify(err.message));
   }
 }
