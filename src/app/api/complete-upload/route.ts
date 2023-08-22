@@ -77,7 +77,7 @@ export async function POST(request: Request) {
           '#updatedAt': 'updated_at'
         },
         ExpressionAttributeValues: {
-          ':statusValue': { S: 'waiting-approval' },
+          ':statusValue': { S: 'awaiting-approval' },
           ':updatedAtValue': { S: new Date().toISOString() }
         },
         ReturnValues: 'ALL_NEW'

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 import useUploadCounty from '@/hooks/useUploadCounty';
 import { FilesDBResponseData } from '@/types';
-import { ImagePlusIcon } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
 
 export default function UploadAction({ data }: { data: FilesDBResponseData }) {
   const uploadCounty = useUploadCounty();
@@ -18,12 +18,12 @@ export default function UploadAction({ data }: { data: FilesDBResponseData }) {
   };
 
   return (
-    <Button
-      size={'icon'}
-      className="group bg-indigo-200 transition hover:bg-indigo-300"
+    <div
+      className="flex cursor-pointer items-center gap-1 rounded bg-indigo-500 p-1 text-xs text-white shadow-lg transition hover:bg-indigo-600"
       onClick={handleUpload}
     >
-      <ImagePlusIcon className="text-indigo-600" />
-    </Button>
+      <UploadCloud className="text-indigo-600" size={14} color="white" />
+      Upload
+    </div>
   );
 }

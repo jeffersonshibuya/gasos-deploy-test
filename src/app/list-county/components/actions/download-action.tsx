@@ -23,12 +23,12 @@ export default function DownloadAction({
   };
 
   return (
-    <Button
-      size={'icon'}
-      className="group bg-neutral-200 transition hover:bg-neutral-300"
+    <span
+      className="group flex cursor-pointer items-center gap-2 transition hover:bg-gray-200"
       onClick={handleDownloadFile}
     >
-      <FolderDown className="text-neutral-600" />
-    </Button>
+      <FolderDown className="h-4 w-4 text-neutral-600" />
+      Download
+    </span>
   );
 }

@@ -2,7 +2,8 @@ import {
   CheckCircledIcon,
   QuestionMarkCircledIcon,
   CrossCircledIcon,
-  UploadIcon
+  UploadIcon,
+  TimerIcon
 } from '@radix-ui/react-icons';
 
 export const electionTypes = [
@@ -209,9 +210,9 @@ export const counties = [
 
 export const statuses = [
   {
-    value: 'waiting-approval',
-    label: 'Waiting-Approval',
-    icon: QuestionMarkCircledIcon
+    value: 'awaiting-approval',
+    label: 'Awaiting-approval',
+    icon: TimerIcon
   },
   {
     value: 'approved',
@@ -227,9 +228,9 @@ export const statuses = [
 
 export const countyStatuses = [
   {
-    value: 'waiting-approval',
-    label: 'Waiting-Approval',
-    icon: QuestionMarkCircledIcon
+    value: 'awaiting-approval',
+    label: 'Awaiting-approval',
+    icon: TimerIcon
   },
   {
     value: 'approved',

@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       id: randomUUID(),
       file: fileName,
       folder: folder,
-      status: 'waiting-approval',
+      status: 'awaiting-approval',
       isPublic: false,
       year,
       electionType,

@@ -19,11 +19,12 @@ export default function DownloadAction({
 
   return (
     <Button
-      size={'icon'}
-      className="group bg-neutral-200 transition hover:bg-neutral-300"
+      variant={'ghost'}
+      className="group flex items-center gap-1 transition"
       onClick={handleDownloadFile}
     >
-      <FolderDown className="text-neutral-600" />
+      <FolderDown className="h-4 w-4 text-neutral-600" />
+      Download
     </Button>
   );
 }

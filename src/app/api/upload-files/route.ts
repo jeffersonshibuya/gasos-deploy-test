@@ -40,7 +40,7 @@ export async function PUT(request: Request) {
   console.log(fileName);
 
   // Define the status tag
-  const tagsToAdd = [{ Key: 'status', Value: 'waiting-approval' }];
+  const tagsToAdd = [{ Key: 'status', Value: 'awaiting-approval' }];
 
   try {
     // Add tags to the uploaded object

@@ -21,12 +21,12 @@ export default function UploadProgressAction({
   };
 
   return (
-    <Button
-      size={'icon'}
-      className="group bg-neutral-200 transition hover:bg-neutral-300"
+    <div
+      className="group flex cursor-pointer items-center gap-1 text-blue-700 underline transition"
       onClick={handleShowProgressModal}
     >
-      <Percent className="text-neutral-600" />
-    </Button>
+      {/* <FolderDown className="h-4 w-4 text-neutral-600" /> */}
+      Status
+    </div>
   );
 }

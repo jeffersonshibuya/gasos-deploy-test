@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -14,12 +15,12 @@ import { FilesDBResponseData } from '@/types';
 import { fadeIn, itemVariants } from '@/utils/animation';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { AlertTriangle, RefreshCcw } from 'lucide-react';
+import { AlertTriangle, Ban, RefreshCcw } from 'lucide-react';
 
 export type FileStatus =
   | 'pending'
   | 'loading'
-  | 'waiting-approval'
+  | 'awaiting-approval'
   | 'canceled'
   | 'failed';
 
@@ -176,7 +177,7 @@ export default function Upload() {
     setBytesLoaded(fileUpload?.file.size || 0);
     setFileStatus(response.data.status);
 
-    router.push('/list-approval');
+    router.push('/list-county');
   };
 
   const handleUpload = async (
@@ -192,35 +193,67 @@ export default function Upload() {
 
     const fileNameFormatted = fileName + '.zip';
 
-    setUploading(true);
-    const id = `${year}-${electionType}-${county}`.trim().replace(/\s/g, '_');
-    setFileId(id);
-
-    // Start Upload
-    const startUploadId = await handleStartUpload(
-      id,
-      fileNameFormatted,
-      fileUpload?.file.name,
+    // check file is already upload for this id
+    const checkFileResponse = await axios.post('/api/check-county-upload', {
+      county,
       year,
-      electionType,
-      county
-    );
+      electionType
+    });
 
-    if (startUploadId) {
-      // Upload parts
-      const uploadedParts = await UploadParts(
-        startUploadId,
+    if (checkFileResponse.data.isValid) {
+      setUploading(true);
+      const id = `${year}-${electionType}-${county}`.trim().replace(/\s/g, '_');
+      setFileId(id);
+
+      // Start Upload
+      const startUploadId = await handleStartUpload(
         id,
-        fileNameFormatted
+        fileNameFormatted,
+        fileUpload?.file.name,
+        year,
+        electionType,
+        county
       );
 
-      if (uploadedParts) {
-        // Complete the multipart upload
-        await CompleteUpload(startUploadId, id, fileNameFormatted);
-      }
-    }
+      if (startUploadId) {
+        // Upload parts
+        const uploadedParts = await UploadParts(
+          startUploadId,
+          id,
+          fileNameFormatted
+        );
 
-    setUploading(false);
+        if (uploadedParts) {
+          // Complete the multipart upload
+          await CompleteUpload(startUploadId, id, fileNameFormatted);
+        }
+      }
+
+      setUploading(false);
+    } else {
+      toast.custom((t) => (
+        <div
+          className={`${t.visible ? 'animate-enter' : 'animate-leave'
+            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+        >
+          <div className="flex-1 w-0 p-4">
+            <div className="flex items-start">
+              <div className="flex-shrink-0 my-auto">
+                <Ban color="red" />
+              </div>
+              <div className="ml-3 flex-1">
+                <p className="text-sm font-medium text-gray-900">
+                  File already uploaded
+                </p>
+                <p className="mt-1 text-sm text-gray-500">
+                  Current Status: <span className='font-semibold capitalize'>{checkFileResponse.data.status}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))
+    }
   };
 
   const handleRemoveFile = () => {
@@ -342,7 +375,7 @@ export default function Upload() {
         countyUploadData={uploadCounty.fileData}
         isLoading={uploading}
         handleDropFiles={handleDrop}
-        isDisabled={!!fileUpload.file}
+        isDisabled={!!fileUpload.file && (fileStatus === 'failed')}
       />
 
       {fileUpload?.file && (

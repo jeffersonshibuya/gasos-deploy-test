@@ -211,6 +211,7 @@ export default function UploadForm({
               <Button
                 variant="outline"
                 type='button'
+                disabled={isLoading}
                 onClick={() => router.back()}
                 className=""
               >
@@ -220,7 +221,7 @@ export default function UploadForm({
               <Button
                 variant="default"
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isDisabled}
                 className="bg-indigo-600 text-white 
                   transition duration-300 hover:bg-indigo-700
                   hover:text-white disabled:opacity-40"
@@ -233,7 +234,7 @@ export default function UploadForm({
                 ) : (
                   <>
                     <FileUp className="mr-2 h-4 w-4" />
-                    Upload Files
+                    Start Upload
                   </>
                 )}
               </Button>

@@ -16,8 +16,11 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     }
   },
   {
-    accessorKey: 'file',
-    header: 'File'
+    accessorKey: 'county',
+    header: 'County',
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    }
   },
   {
     accessorKey: 'electionType',
@@ -48,23 +51,24 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
       return value.includes(row.getValue(id));
     }
   },
-  {
-    accessorKey: 'updated_at',
-    header: 'Date',
-    cell: ({ row }) => {
-      return (
-        <time dateTime={row.original.updated_at}>
-          {new Intl.DateTimeFormat('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-          }).format(new Date(Date.parse(row.original.updated_at)))}
-        </time>
-      );
-    }
-  },
+
+  // {
+  //   accessorKey: 'updated_at',
+  //   header: 'Date',
+  //   cell: ({ row }) => {
+  //     return (
+  //       <time dateTime={row.original.updated_at}>
+  //         {new Intl.DateTimeFormat('en-US', {
+  //           year: 'numeric',
+  //           month: '2-digit',
+  //           day: '2-digit',
+  //           hour: '2-digit',
+  //           minute: '2-digit'
+  //         }).format(new Date(Date.parse(row.original.updated_at)))}
+  //       </time>
+  //     );
+  //   }
+  // },
   {
     accessorKey: 'size',
     header: 'Size',

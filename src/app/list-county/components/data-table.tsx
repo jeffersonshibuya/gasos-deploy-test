@@ -107,7 +107,6 @@ export default function FilesDataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {/* <DataTablePagination table={table} /> */}
     </div>
   );
 }

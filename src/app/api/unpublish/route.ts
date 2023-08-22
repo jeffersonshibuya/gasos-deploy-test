@@ -72,7 +72,7 @@ const updateDynamoDBItem = async (fileId: string) => {
       '#isPublic': 'isPublic'
     },
     ExpressionAttributeValues: {
-      ':statusValue': { S: 'waiting-approval' },
+      ':statusValue': { S: 'awaiting-approval' },
       ':isPublicValue': { BOOL: false }
     },
     ReturnValues: 'ALL_NEW'

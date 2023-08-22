@@ -6,8 +6,10 @@ import RejectionAction from './actions/rejection-action';
 import UnpublishAction from './actions/unpublish-action';
 
 import { counties, electionTypes, statuses, years } from '@/data/filesData';
+import { cn } from '@/lib/utils';
 import { FilesDBResponseData } from '@/types';
 import { formatBytes } from '@/utils/format-bytes';
+import { formatStatus } from '@/utils/format-status';
 import { ColumnDef } from '@tanstack/react-table';
 
 export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
@@ -112,7 +114,14 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
           {status.icon && (
             <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
-          <span>{status.label}</span>
+          <div
+            className={cn(
+              'flex flex-col font-semibold capitalize',
+              formatStatus(row.original.status)
+            )}
+          >
+            <span>{status.label}</span>
+          </div>
         </div>
       );
     },
@@ -126,7 +135,7 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center justify-end gap-2">
-          {row.original.status === 'waiting-approval' && (
+          {row.original.status === 'awaiting-approval' && (
             <>
               <ApprovalAction
                 id={row.original.id}

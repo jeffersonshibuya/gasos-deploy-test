@@ -10,23 +10,33 @@ import { Button } from '@/components/ui/button';
 
 import { filesColumns } from './columns';
 import FilesDataTable from './data-table';
+import FilesFilter from './filters';
 
-import { FilesDBResponseData, FilesResponseData, FilesResponseDataGrouped } from '@/types';
-import { formatBytes } from '@/utils/format-bytes';
+import { FilesDBResponseData } from '@/types';
 import axios from 'axios';
-import { CornerDownRight, File, Folder, RefreshCcw } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 
-interface FilesListProps {
-  files: FilesDBResponseData[];
-}
 
-export default function FilesPublicList({ files }: FilesListProps) {
+
+export default function FilesPublicList() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [filesData, setFilesData] = useState<FilesDBResponseData[]>([]);
 
-  useEffect(() => {
-    setFilesData(files);
-  }, [files]);
+  async function handleSearchFiles(year: string, electionType: string, county: string) {
+    setIsLoading(true)
+    const response = await axios.post<FilesDBResponseData[]>(
+      '/api/files-filter',
+      {
+        year,
+        electionType,
+        county
+      }
+    );
+
+    setFilesData(response.data)
+    setIsLoading(false)
+  }
 
   return (
     <>
@@ -40,7 +50,8 @@ export default function FilesPublicList({ files }: FilesListProps) {
           <RefreshCcw className="h-4 w-4" />
         </Button>
       </div>
-      <div className='my-4'>
+      <div className='my-4 space-y-4'>
+        <FilesFilter isLoading={isLoading} handleSearchFiles={handleSearchFiles} />
         <FilesDataTable columns={filesColumns} data={filesData} />
       </div>
     </>

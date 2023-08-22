@@ -44,9 +44,15 @@ export default function FilesCountyList({ files }: FilesListProps) {
     setCountySelected(item.value)
   }
 
+  function handleRefresh() {
+    router.refresh()
+  }
+
   useEffect(() => {
-    setFilesData(files.filter(file => file.county === 'Polk'));
-  }, [files]);
+    if (countySelected) {
+      setFilesData(files.filter(file => file.county === countySelected));
+    }
+  }, [files, countySelected]);
 
   return (
     <>
@@ -71,7 +77,7 @@ export default function FilesCountyList({ files }: FilesListProps) {
           </Button>
           <Button
             variant="outline"
-            onClick={() => router.refresh()}
+            onClick={handleRefresh}
             size={'icon'}
           >
             <RefreshCcw className="h-4 w-4" />

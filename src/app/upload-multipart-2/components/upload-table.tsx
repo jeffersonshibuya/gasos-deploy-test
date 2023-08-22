@@ -47,7 +47,7 @@ export function UploadTable({
 }: UploadTableProps) {
   const loadStatusIcon = (fileStatus: FileStatus) => {
     switch (fileStatus) {
-      case 'waiting-approval':
+      case 'awaiting-approval':
         return <Check className="text-green-600" size={32} />;
       case 'canceled':
         return <Ban size={32} />;
@@ -78,7 +78,7 @@ export function UploadTable({
           <TableBody>
             <TableRow
               // eslint-disable-next-line prettier/prettier
-              className={`${fileStatus === 'waiting-approval' && 'bg-green-500/10'}`}
+              className={`${fileStatus === 'awaiting-approval' && 'bg-green-500/10'}`}
             >
               <TableCell>
                 <div className="text-neutral-500">

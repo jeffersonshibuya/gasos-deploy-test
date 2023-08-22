@@ -1,13 +1,15 @@
 'use client';
 
+import { DataTableRowActions } from './actions/data-table-row-actions';
 import DownloadAction from './actions/download-action';
-import ResumeUploadAction from './actions/resume-upload-action';
 import UploadAction from './actions/upload-action';
 import UploadProgressAction from './actions/upload-progress-action';
 
 import { countyStatuses, electionTypes } from '@/data/filesData';
+import { cn } from '@/lib/utils';
 import { FilesDBResponseData } from '@/types';
 import { formatBytes } from '@/utils/format-bytes';
+import { formatStatus } from '@/utils/format-status';
 import { ColumnDef } from '@tanstack/react-table';
 
 export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
@@ -18,10 +20,10 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
       return <span>{row.index + 1}</span>;
     }
   },
-  // {
-  //   accessorKey: 'file',
-  //   header: 'File'
-  // },
+  {
+    accessorKey: 'county',
+    header: 'County'
+  },
   {
     accessorKey: 'status',
     header: 'Status',
@@ -39,15 +41,26 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
           {status.icon && (
             <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
-          <div className="flex flex-col">
+          <div
+            className={cn(
+              'flex flex-col capitalize',
+              formatStatus(row.original.status)
+            )}
+          >
             <span>{row.original.status}</span>
             {typeof localStorage !== 'undefined' &&
               localStorage.getItem(`upload-fail-${row.original.id}`) && (
-                <span>Failed</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-red-500">Failed</span>
+                  <UploadAction data={row.original} />
+                </div>
               )}
 
             {row.original.status === 'rejected' && (
-              <span>{row.original.reason}</span>
+              <div className="flex items-center gap-2">
+                <span>{row.original.reason}</span>
+                <UploadAction data={row.original} />
+              </div>
             )}
           </div>
         </div>
@@ -126,22 +139,22 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     }
   },
   {
-    accessorKey: 'actions',
-    header: '',
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center justify-end gap-2">
-          {row.original.status === 'rejected' && (
-            <UploadAction data={row.original} />
-          )}
-          {typeof localStorage !== 'undefined' &&
-            localStorage?.getItem(`upload-fail-${row.original.id}`) && (
-              <ResumeUploadAction data={row.original} />
-            )}
-          <UploadProgressAction data={row.original} />
-          <DownloadAction data={row.original} />
-        </div>
-      );
-    }
+    id: 'actions',
+    cell: ({ row }) => <DataTableRowActions row={row} />
+    // cell: ({ row }) => {
+    //   return (
+    //     <div className="flex items-center justify-end gap-1">
+    //       {row.original.status === 'rejected' && (
+    //         <UploadAction data={row.original} />
+    //       )}
+    //       {typeof localStorage !== 'undefined' &&
+    //         localStorage?.getItem(`upload-fail-${row.original.id}`) && (
+    //           <ResumeUploadAction data={row.original} />
+    //         )}
+    //       <UploadProgressAction data={row.original} />
+    //       <DownloadAction data={row.original} />
+    //     </div>
+    //   );
+    // }
   }
 ];
