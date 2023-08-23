@@ -31,8 +31,6 @@ export async function POST(request: Request) {
     expressionValues[':countyValue'] = { S: county }
   }
 
-
-
   const input = {
     TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
     FilterExpression: filterExpression,

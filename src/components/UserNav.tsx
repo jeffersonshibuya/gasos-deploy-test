@@ -19,15 +19,15 @@ import useLoginModal from '@/hooks/useLoginModal';
 import { LogIn, LogOut, Settings, User, User2 } from 'lucide-react';
 
 interface UserNavProps {
-  currentUser: any;
+  currentuser: any;
 }
 
-export function UserNav({ currentUser }: UserNavProps) {
+export function UserNav({ currentuser }: UserNavProps) {
   const { onOpen } = useLoginModal();
 
   return (
     <>
-      {!currentUser ? (
+      {!currentuser ? (
         <>
           <Button onClick={onOpen} variant={'outline'} className="gap-2">
             Log in
@@ -53,7 +53,7 @@ export function UserNav({ currentUser }: UserNavProps) {
                 <div>
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={currentUser?.user.image}
+                      src={currentuser?.user.image}
                       alt="user avatar"
                     />
                     <AvatarFallback>
@@ -63,7 +63,7 @@ export function UserNav({ currentUser }: UserNavProps) {
                 </div>
                 <div className="ml-3">
                   <p className="text-xs font-medium text-gray-400 group-hover:text-indigo-700">
-                    {currentUser?.user.email}
+                    {currentuser?.user.email}
                   </p>
                 </div>
               </div>
@@ -73,10 +73,10 @@ export function UserNav({ currentUser }: UserNavProps) {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">
-                  {currentUser?.user.name}
+                  {currentuser?.user.name}
                 </p>
                 <p className="text-xs leading-none text-muted-foreground">
-                  {currentUser?.user.email}
+                  {currentuser?.user.email}
                 </p>
               </div>
             </DropdownMenuLabel>

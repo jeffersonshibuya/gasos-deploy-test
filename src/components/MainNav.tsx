@@ -10,7 +10,7 @@ import { LayoutList } from 'lucide-react';
 
 interface MainNavProps {
   className: string;
-  currentUser?: any | null;
+  currentuser?: any | null;
 }
 
 export function MainNav({ className, ...props }: MainNavProps) {

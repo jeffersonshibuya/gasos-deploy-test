@@ -5,9 +5,9 @@ import LoginForm from './components/LoginForm';
 import getCurrentUser from '@/actions/getCurrentUser';
 
 export default async function Login() {
-  const currentUser = await getCurrentUser();
+  const currentuser = await getCurrentUser();
 
-  if (currentUser) {
+  if (currentuser) {
     redirect('/');
   }
 

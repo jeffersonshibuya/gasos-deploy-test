@@ -25,7 +25,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const currentUser = await getCurrentUser();
+  // const currentuser = await getCurrentUser();
+  const currentuser = null;
 
   return (
     <html lang="en">
@@ -39,9 +40,9 @@ export default async function RootLayout({
         <div className="flex-col md:flex">
           <div className="border-b">
             <div className="flex h-16 items-center px-4">
-              <MainNav className="mx-6" currentUser={currentUser} />
+              <MainNav className="mx-6" currentuser={currentuser} />
               <div className="ml-auto mr-4 flex items-center space-x-4">
-                <UserNav currentUser={currentUser} />
+                <UserNav currentuser={currentuser} />
               </div>
             </div>
           </div>
