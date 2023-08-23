@@ -11,19 +11,19 @@ const nextConfig = {
         headers: [
           {
             key: 'Access-Control-Allow-Credentials',
-            value: process.env.ACCESS_CONTROL_ALLOW_CREDENTIALS
+            value: String(process.env.ACCESS_CONTROL_ALLOW_CREDENTIALS)
           },
           {
             key: 'Access-Control-Allow-Origin',
-            value: process.env.ACCESS_CONTROL_ALLOW_ORIGIN
-          }, // replace this your actual origin
+            value: String(process.env.ACCESS_CONTROL_ALLOW_ORIGIN)
+          },
           {
             key: 'Access-Control-Allow-Methods',
-            value: process.env.ACCESS_CONTROL_ALLOW_METHODS
+            value: String(process.env.ACCESS_CONTROL_ALLOW_METHODS)
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value: process.env.ACCESS_CONTROL_ALLOW_HEADERS
+            value: String(process.env.ACCESS_CONTROL_ALLOW_HEADERS)
           }
         ]
       }
