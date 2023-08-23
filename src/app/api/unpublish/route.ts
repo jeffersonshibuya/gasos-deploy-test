@@ -3,26 +3,26 @@ import { NextResponse } from 'next/server';
 import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 
 const client = new DynamoDBClient({
-  region: process.env.AWS_REGION,
+  region: process.env.NEXT_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
   }
 });
 
 // const s3Client = new S3Client({
-//   region: process.env.AWS_REGION,
+//   region: process.env.NEXT_AWS_REGION,
 //   credentials: {
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+//     accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+//     secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
 //   }
 // });
 
 // const SESClient = new SESv2Client({
-//   region: process.env.AWS_REGION,
+//   region: process.env.NEXT_AWS_REGION,
 //   credentials: {
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+//     accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+//     secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
 //   }
 // });
 
@@ -31,7 +31,7 @@ const client = new DynamoDBClient({
 //     // Move files to public folder
 //     const sourceKey = `${folder}/${fileName}`;
 //     const destinationKey = `${sourceKey}`;
-//     const bucketName = process.env.AWS_BUCKET_NAME;
+//     const bucketName = process.env.NEXT_AWS_BUCKET_NAME;
 
 //     // Create a CopyObjectCommand to copy the file to the new location
 //     const copyObjectParams = {
@@ -56,7 +56,7 @@ const client = new DynamoDBClient({
 
 const updateDynamoDBItem = async (fileId: string) => {
   const params = {
-    TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+    TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
     Key: {
       id: { S: fileId }
     },

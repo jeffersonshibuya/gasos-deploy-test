@@ -7,16 +7,16 @@ import {
 } from '@aws-sdk/client-s3';
 
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
+  region: process.env.NEXT_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
   }
 });
 
 export async function POST() {
   const input = {
-    Bucket: process.env.AWS_BUCKET_NAME
+    Bucket: process.env.NEXT_AWS_BUCKET_NAME
   };
 
   try {
@@ -29,7 +29,7 @@ export async function POST() {
 
       // Getting tags
       const inputTagging = {
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.NEXT_AWS_BUCKET_NAME,
         Key: object.Key
       };
       const command = new GetObjectTaggingCommand(inputTagging);
@@ -41,7 +41,7 @@ export async function POST() {
         key: object.Key,
         name: fileName,
         url:
-          `https://${process.env.AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/` +
+          `https://${process.env.NEXT_AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/` +
           object.Key,
         modified_at: object.LastModified,
         size: object.Size,
@@ -57,7 +57,7 @@ export async function POST() {
     //       key: content.Key,
     //       name: fileName,
     //       url:
-    //         `https://${process.env.AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/` +
+    //         `https://${process.env.NEXT_AWS_BUCKET_NAME}.s3.us-east-1.amazonaws.com/` +
     //         content.Key,
     //       modified_at: content.LastModified,
     //       size: content.Size

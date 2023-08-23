@@ -9,10 +9,10 @@ import {
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 const credentials = {
-  region: process.env.AWS_REGION,
+  region: process.env.NEXT_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
   }
 };
 
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
   const { uploadId } = await request.json();
 
   const input = {
-    TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+    TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
     FilterExpression: '#uploadId = :uploadIdValue',
     ExpressionAttributeNames: {
       '#uploadId': 'uploadId'
@@ -64,7 +64,7 @@ export async function GET() {
   const uploadId = headersList.get('uploadId') || '';
   try {
     const input = {
-      TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+      TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
       FilterExpression: '#uploadId = :uploadIdValue',
       ExpressionAttributeNames: {
         '#uploadId': 'uploadId'

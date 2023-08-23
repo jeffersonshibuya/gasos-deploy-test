@@ -5,10 +5,10 @@ import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 const ddbClient = new DynamoDBClient({
-  region: process.env.AWS_REGION,
+  region: process.env.NEXT_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
   }
 });
 
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 
 
   const input = {
-    TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+    TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
     FilterExpression: filterExpression,
     ExpressionAttributeNames: {
       '#year': 'year',

@@ -9,18 +9,18 @@ import {
 import { marshall } from '@aws-sdk/util-dynamodb';
 
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
+  region: process.env.NEXT_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
   }
 });
 
 const ddbClient = new DynamoDBClient({
-  region: process.env.AWS_REGION,
+  region: process.env.NEXT_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
   }
 });
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
     const s3Response = await s3Client.send(
       new CreateMultipartUploadCommand({
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.NEXT_AWS_BUCKET_NAME,
         Key: fileName
       })
     );
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     const marshallItem = marshall(item);
 
     const input = {
-      TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+      TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
       Item: marshallItem
     };
 
@@ -89,7 +89,7 @@ export async function PUT(request: Request) {
 
     const uploadPartResponse = await s3Client.send(
       new UploadPartCommand({
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.NEXT_AWS_BUCKET_NAME,
         Key: String(fileName),
         PartNumber: Number(partNumber),
         UploadId: String(uploadId),

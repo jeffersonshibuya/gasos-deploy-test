@@ -8,9 +8,9 @@ export const authOptions: AuthOptions = {
     //   clientSecret: process.env.GITHUB_SECRET as string
     // }),
     CognitoProvider({
-      clientId: process.env.AWS_COGNITO_CLIENT_ID as string,
-      clientSecret: process.env.AWS_COGNITO_CLIENT_SECRET as string,
-      issuer: process.env.AWS_COGNITO_ISSUER as string
+      clientId: process.env.NEXT_AWS_COGNITO_CLIENT_ID as string,
+      clientSecret: process.env.NEXT_AWS_COGNITO_CLIENT_SECRET as string,
+      issuer: process.env.NEXT_AWS_COGNITO_ISSUER as string
     })
     // GoogleProvider({
     //   clientId: process.env.GOOGLE_CLIENT_ID as string,

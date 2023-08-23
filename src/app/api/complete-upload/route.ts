@@ -10,10 +10,10 @@ import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 const credentials = {
-  region: process.env.AWS_REGION,
+  region: process.env.NEXT_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
+    accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
+    secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
   }
 };
 
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
     const completeUploadResponse = await s3Client.send(
       new CompleteMultipartUploadCommand({
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.NEXT_AWS_BUCKET_NAME,
         Key: fileName,
         UploadId: uploadId,
         MultipartUpload: { Parts: parts }
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
 
     if (completeUploadResponse.$metadata?.httpStatusCode === 200) {
       const input = {
-        TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+        TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
         Key: {
           id: { S: id }
         },
