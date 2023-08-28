@@ -65,12 +65,12 @@ export function UploadTable({
     <>
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-secondary">
             <TableRow>
               <TableHead style={{ width: 60 }}></TableHead>
-              <TableHead>Info</TableHead>
-              <TableHead>File Data</TableHead>
-              <TableHead>Upload Progress</TableHead>
+              <TableHead className="text-white">Info</TableHead>
+              <TableHead className="text-white">File Data</TableHead>
+              <TableHead className="text-white">Upload Progress</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>

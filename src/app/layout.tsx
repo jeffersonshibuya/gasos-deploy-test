@@ -38,7 +38,7 @@ export default async function RootLayout({
         <ToasterProvider />
         <div className="flex-col md:flex">
           <div className="border-b">
-            <div className="flex h-16 items-center px-4">
+            <div className="flex h-16 items-center bg-gradient-to-r from-[#004B70] via-[#00AA8B] to-[#00A3B5] px-4">
               <MainNav className="mx-6" currentuser={currentuser} />
               <div className="ml-auto mr-4 flex items-center space-x-4">
                 <UserNav currentuser={currentuser} />

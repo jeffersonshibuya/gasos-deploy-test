@@ -125,7 +125,7 @@ export default function FilesFilter({
     <motion.div variants={fadeIn} initial="hidden" animate="show">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <motion.div className="grid grid-cols-6 space-x-4 rounded-lg border border-gray-200 p-4 shadow">
+          <motion.div className="grid grid-cols-6 space-x-4 rounded bg-secondary p-2 text-white">
             <motion.div variants={itemVariants} className="col-span-2">
               <div className="mt-2">
                 <FormField
@@ -135,9 +135,9 @@ export default function FilesFilter({
                       <FormLabel>Year*</FormLabel>
                       <FormControl>
                         <Select
+                          className="font-semibold text-primary"
                           isSearchable={false}
                           isClearable={false}
-                          // isDisabled={isDisabled}
                           options={years()}
                           value={field.value}
                           onChange={(item: SelectionDefaultType) =>
@@ -163,8 +163,8 @@ export default function FilesFilter({
                       <FormLabel>Election Type</FormLabel>
                       <FormControl>
                         <Select
+                          className="font-semibold text-primary"
                           isClearable={false}
-                          // isDisabled={isDisabled}
                           options={electionTypeList}
                           value={field.value}
                           onChange={(item: SelectionDefaultType) =>
@@ -190,8 +190,8 @@ export default function FilesFilter({
                       <FormLabel>County</FormLabel>
                       <FormControl>
                         <Select
+                          className="font-semibold text-primary"
                           isClearable={false}
-                          // isDisabled={isDisabled}
                           options={countyList}
                           value={field.value}
                           onChange={(item: SelectionDefaultType) =>
@@ -213,8 +213,8 @@ export default function FilesFilter({
                 variant="default"
                 type="submit"
                 disabled={isLoading}
-                className="bg-indigo-600 text-white 
-                  transition duration-300 hover:bg-indigo-700
+                className="bg-primary text-white 
+                  transition duration-300 hover:bg-primary/80
                   hover:text-white disabled:opacity-40"
               >
                 {isLoading ? (

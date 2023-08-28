@@ -29,8 +29,8 @@ export default function UploadDropArea({
           <div
             {...getRootProps()}
             className={`${isDisabled && 'opacity-70 cursor-not-allowed bg-gray-50'} rounded-md order-2 mt-1 flex 
-              cursor-pointer justify-center border border-dashed border-gray-300 px-6 
-              pb-6 pt-5 transition duration-300 hover:bg-gray-100
+              cursor-pointer justify-center border border-dashed border-secondary px-6 
+              pb-6 pt-5 transition duration-300 hover:bg-secondary/10
             `}
           >
             <div className="space-y-1 text-center">

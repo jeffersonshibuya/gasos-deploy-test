@@ -59,14 +59,14 @@ export default function ApprovalAction({
         <TooltipTrigger>
           <Button
             size={'icon'}
-            className="group bg-green-200 hover:bg-green-400"
+            className="group bg-secondary/80 hover:bg-secondary"
             onClick={handleApproveFile}
             disabled={isLoading}
           >
             {!isLoading ? (
-              <CheckCircledIcon className="h-5 w-5 text-green-700 group-hover:text-green-900" />
+              <CheckCircledIcon className="h-5 w-5 text-white" />
             ) : (
-              <Loader2 className="animate-spin text-neutral-800" />
+              <Loader2 className="animate-spin text-white" />
             )}
           </Button>
         </TooltipTrigger>

@@ -39,7 +39,7 @@ export default function FilesPublicList() {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <Heading title="Public Files" />
         <Button
           variant="outline"
@@ -48,8 +48,8 @@ export default function FilesPublicList() {
         >
           <RefreshCcw className="h-4 w-4" />
         </Button>
-      </div>
-      <div className='my-4 space-y-4'>
+      </div> */}
+      <div className='my-1 space-y-4'>
         <FilesFilter isLoading={isLoading} handleSearchFiles={handleSearchFiles} />
         <FilesDataTable columns={filesColumns} data={filesData} />
       </div>

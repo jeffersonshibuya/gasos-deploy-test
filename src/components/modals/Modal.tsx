@@ -129,7 +129,9 @@ export default function Modal({
                 justify-center
                 rounded-t
                 border-b-[1px]
+                bg-secondary
                 p-6
+                text-white
                 "
               >
                 <button

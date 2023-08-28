@@ -62,7 +62,7 @@ export default function FilesDataTable<TData, TValue>({
               <TableRow key={headerGroup.id} className='rounded-lg'>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className='text-white border-r border-gray-200 bg-gray-400'>
+                    <TableHead key={header.id} className='text-white border-r border-gray-200 bg-secondary'>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -83,7 +83,7 @@ export default function FilesDataTable<TData, TValue>({
                   data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className='text-primary'>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

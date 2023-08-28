@@ -65,7 +65,7 @@ export default function FilesDataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className='text-white border-r border-gray-200 bg-gray-400'>
+                    <TableHead key={header.id} className='text-white border-r bg-secondary'>
                       {header.isPlaceholder
                         ? null
                         : flexRender(

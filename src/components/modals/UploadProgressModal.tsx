@@ -9,6 +9,7 @@ import Modal from './Modal';
 import useUploadProgressModal from '@/hooks/useUploadProgressModal';
 import { FilesDBResponseData } from '@/types';
 import { formatBytes } from '@/utils/format-bytes';
+import { formatStatus } from '@/utils/format-status';
 import axios from 'axios';
 import { Loader2, PauseOctagon } from 'lucide-react';
 
@@ -89,9 +90,17 @@ export default function UploadProgressModal() {
                     Status
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize font-semibold">
-                    {fileData.status}
+                    <span className={`${formatStatus(fileData.status)}`}>{fileData.status}</span>
                   </dd>
                 </div>
+                {fileData.status === 'rejected' && <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-6 sm:px-0">
+                  <dt className="text-sm font-medium leading-6 text-gray-900">
+                    Reason
+                  </dt>
+                  <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                    {fileData.reason}
+                  </dd>
+                </div>}
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                   <dt className="text-sm font-medium leading-6 text-gray-900">
                     Created At

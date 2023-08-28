@@ -205,7 +205,7 @@ export default function UploadForm({
               </div>
             </div>}
 
-            <div className="mt-2 flex items-center justify-end gap-x-2">
+            <div className="flex items-center justify-end gap-x-2 bg-gradient-to-r from-10% from-white to-secondary/20 rounded py-4 pr-2">
               <Button
                 variant="outline"
                 type='button'
@@ -220,8 +220,8 @@ export default function UploadForm({
                 variant="default"
                 type="submit"
                 disabled={isLoading || isDisabled}
-                className="bg-indigo-600 text-white 
-                  transition duration-300 hover:bg-indigo-700
+                className="bg-primary text-white 
+                  transition duration-300 hover:bg-primary/80
                   hover:text-white disabled:opacity-40"
               >
                 {isLoading ? (

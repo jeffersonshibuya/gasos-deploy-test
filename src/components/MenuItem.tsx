@@ -20,8 +20,8 @@ export default function MenuItem({
     <Link
       href={href}
       className={cn(
-        `flex items-center gap-x-2 text-sm font-medium transition`,
-        active && 'text-primary',
+        `flex items-center gap-x-2 text-sm  transition`,
+        active && ' font-semibold text-[#00A3B5]',
         !active && 'hover:text-primary'
       )}
     >

@@ -51,29 +51,18 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
       return value.includes(row.getValue(id));
     }
   },
-
-  // {
-  //   accessorKey: 'updated_at',
-  //   header: 'Date',
-  //   cell: ({ row }) => {
-  //     return (
-  //       <time dateTime={row.original.updated_at}>
-  //         {new Intl.DateTimeFormat('en-US', {
-  //           year: 'numeric',
-  //           month: '2-digit',
-  //           day: '2-digit',
-  //           hour: '2-digit',
-  //           minute: '2-digit'
-  //         }).format(new Date(Date.parse(row.original.updated_at)))}
-  //       </time>
-  //     );
-  //   }
-  // },
   {
     accessorKey: 'size',
     header: 'Size',
     cell: ({ row }) => {
       return <span>{formatBytes(row.original.size)}</span>;
+    }
+  },
+  {
+    accessorKey: 'file',
+    header: 'File',
+    cell: ({ row }) => {
+      return <span>{row.original.file}</span>;
     }
   },
   {

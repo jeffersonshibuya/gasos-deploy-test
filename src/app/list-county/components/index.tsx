@@ -1,21 +1,12 @@
 /* eslint-disable prettier/prettier */
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Select from 'react-select';
-
-import Heading from '@/components/Heading';
-import { Button } from '@/components/ui/button';
 
 import { filesColumns } from './columns';
 import FilesDataTable from './data-table';
 
-import { counties } from '@/data/filesData';
-import useUploadCounty from '@/hooks/useUploadCounty';
 import { FilesDBResponseData } from '@/types';
-import { ImagePlusIcon, RefreshCcw } from 'lucide-react';
-
 interface FilesListProps {
   files: FilesDBResponseData[];
 }
@@ -56,38 +47,8 @@ export default function FilesCountyList({ files }: FilesListProps) {
   }, [countySelected, files]);
 
   return (
-    <>
-      {/* <div className="flex items-center justify-between">
-        <Heading title={`County Files - ${countySelected}`} />
-
-        <div className='flex items-center gap-2'>
-          <Select
-            className='w-64'
-            isClearable={false}
-            options={counties}
-            value={{ label: countySelected, value: countySelected }}
-            onChange={(item) => handleChangeCounty(item as any)}
-          />
-          <Button
-            size={'sm'}
-            className="group bg-indigo-200 transition hover:bg-indigo-300 flex gap-1 text-indigo-500 font-semibold"
-            onClick={handleNewUpload}
-          >
-            <ImagePlusIcon className="text-indigo-600" size={18} />
-            Upload
-          </Button>
-          <Button
-            variant="outline"
-            onClick={handleRefresh}
-            size={'icon'}
-          >
-            <RefreshCcw className="h-4 w-4" />
-          </Button>
-        </div>
-      </div> */}
-      <div className='my-4'>
-        <FilesDataTable columns={filesColumns} data={filesData} countySelected={countySelected} handleChangeCounty={handleChangeCounty} />
-      </div>
-    </>
+    <div className='my-4'>
+      <FilesDataTable columns={filesColumns} data={filesData} countySelected={countySelected} handleChangeCounty={handleChangeCounty} />
+    </div>
   );
 }

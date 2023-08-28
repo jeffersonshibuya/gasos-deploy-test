@@ -50,10 +50,10 @@ export default function DownloadAction({
         <TooltipTrigger>
           <Button
             size={'icon'}
-            className="group bg-neutral-200 transition hover:bg-neutral-300"
+            className="group bg-[#00A3B5] transition hover:bg-[#00A3B5]/80"
             onClick={handleDownloadFile}
           >
-            <FolderDown className="text-neutral-600" />
+            <FolderDown className="text-white" />
           </Button>
         </TooltipTrigger>
         <TooltipContent>

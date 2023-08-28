@@ -1,9 +1,9 @@
 export function formatStatus(status: string) {
   switch (status) {
     case 'awaiting-approval':
-      return 'text-indigo-600';
+      return 'text-primary';
     case 'approved':
-      return 'text-green-600';
+      return 'text-secondary';
     case 'failed':
       return 'text-red-600';
     case 'rejected':

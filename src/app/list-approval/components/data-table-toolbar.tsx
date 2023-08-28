@@ -20,7 +20,7 @@ export default function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex justify-between gap-5 rounded-lg border border-gray-200 bg-white px-2 py-4">
+    <div className="flex justify-between gap-5 rounded-lg bg-secondary px-2 py-4">
       <div className="flex flex-1 items-center space-x-2">
         <TableHeader />
 
@@ -47,9 +47,9 @@ export default function DataTableToolbar<TData>({
         )}
         {isFiltered && (
           <Button
-            variant="outline"
+            variant="default"
             onClick={() => table.resetColumnFilters()}
-            className="h-10 px-2 lg:px-3"
+            className="h-10 bg-primary px-2 text-white lg:px-3"
           >
             Reset
             <Cross2Icon className="ml-2 h-4 w-4" />
@@ -61,7 +61,7 @@ export default function DataTableToolbar<TData>({
           placeholder="Search..."
           value={table.getState().globalFilter ?? ''}
           onChange={(event) => table.setGlobalFilter(event.target.value)}
-          className="h-10 w-full border border-gray-600 md:w-[350px]"
+          className="h-10 w-full md:w-[350px]"
         />
       </div>
     </div>
