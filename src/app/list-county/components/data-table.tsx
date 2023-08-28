@@ -29,12 +29,16 @@ import {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  data: any[];
+  countySelected: string;
+  handleChangeCounty: (item: any) => void;
 }
 
 export default function FilesDataTable<TData, TValue>({
   columns,
-  data
+  data,
+  countySelected,
+  handleChangeCounty
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
@@ -56,15 +60,15 @@ export default function FilesDataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} countySelected={countySelected} handleChangeCounty={handleChangeCounty} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} >
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className='text-white border-r border-gray-200 bg-gray-400'>
                       {header.isPlaceholder
                         ? null
                         : flexRender(

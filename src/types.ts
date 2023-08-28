@@ -20,6 +20,7 @@ export interface FilesResponseData {
 export interface FilesDBResponseData {
   id: string;
   file: string;
+  originalFile: string;
   folder: string;
   status: string;
   year: string;

@@ -41,8 +41,6 @@ export default function RejectModal() {
     setIsLoading(true);
     const response = await axios.post('/api/reject', {
       fileId: rejectModal.fileSelected.id,
-      folder: rejectModal.fileSelected.folder,
-      fileName: rejectModal.fileSelected.file,
       reason: data.reason
     });
 

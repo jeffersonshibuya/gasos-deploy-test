@@ -21,43 +21,43 @@ interface FilesListProps {
 }
 
 export default function FilesCountyList({ files }: FilesListProps) {
-  const router = useRouter();
-  const uploadCounty = useUploadCounty()
+  // const router = useRouter();
+  // const uploadCounty = useUploadCounty()
 
   const [filesData, setFilesData] = useState<FilesDBResponseData[]>([]);
-  const [countySelected, setCountySelected] = useState('Polk')
+  const [countySelected, setCountySelected] = useState('Appling')
 
-  const handleNewUpload = () => {
-    const data = {} as FilesDBResponseData
+  // const handleNewUpload = () => {
+  //   const data = {} as FilesDBResponseData
 
-    uploadCounty.setFileData({
-      ...data,
-      county: countySelected
-    })
+  //   uploadCounty.setFileData({
+  //     ...data,
+  //     county: countySelected
+  //   })
 
-    router.push(`/upload-multipart-2?county=${countySelected}`)
-  }
+  //   router.push(`/upload-multipart-2?county=${countySelected}`)
+  // }
 
   function handleChangeCounty(item: { label: string; value: string; }) {
     setFilesData(files.filter(file => file.county === item.value))
     setCountySelected(item.value)
   }
 
-  function handleRefresh() {
-    router.refresh()
-  }
+  // function handleRefresh() {
+  //   router.refresh()
+  // }
 
   useEffect(() => {
     if (countySelected) {
       setFilesData(files.filter(file => file.county === countySelected));
     } else {
-      setFilesData(files.filter(file => file.county === 'Polk'));
+      setFilesData(files.filter(file => file.county === 'Appling'));
     }
-  }, [files, countySelected]);
+  }, [countySelected, files]);
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <Heading title={`County Files - ${countySelected}`} />
 
         <div className='flex items-center gap-2'>
@@ -84,9 +84,9 @@ export default function FilesCountyList({ files }: FilesListProps) {
             <RefreshCcw className="h-4 w-4" />
           </Button>
         </div>
-      </div>
+      </div> */}
       <div className='my-4'>
-        <FilesDataTable columns={filesColumns} data={filesData} />
+        <FilesDataTable columns={filesColumns} data={filesData} countySelected={countySelected} handleChangeCounty={handleChangeCounty} />
       </div>
     </>
   );

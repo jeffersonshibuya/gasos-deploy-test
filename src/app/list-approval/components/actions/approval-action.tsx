@@ -5,6 +5,12 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 
 import { CheckCircledIcon } from '@radix-ui/react-icons';
 import axios from 'axios';
@@ -34,8 +40,6 @@ export default function ApprovalAction({
       fileName
     });
 
-    console.log(response.data);
-
     if (response.data.$metadata?.httpStatusCode !== 200) {
       toast.error('Something went wrong. Please try again in a few minutes');
     } else {
@@ -50,17 +54,26 @@ export default function ApprovalAction({
   }, [id]);
 
   return (
-    <Button
-      size={'icon'}
-      className="group bg-green-200 hover:bg-green-400"
-      onClick={handleApproveFile}
-      disabled={isLoading}
-    >
-      {!isLoading ? (
-        <CheckCircledIcon className="h-5 w-5 text-green-700 group-hover:text-green-900" />
-      ) : (
-        <Loader2 className="animate-spin text-neutral-800" />
-      )}
-    </Button>
+    <TooltipProvider delayDuration={50}>
+      <Tooltip>
+        <TooltipTrigger>
+          <Button
+            size={'icon'}
+            className="group bg-green-200 hover:bg-green-400"
+            onClick={handleApproveFile}
+            disabled={isLoading}
+          >
+            {!isLoading ? (
+              <CheckCircledIcon className="h-5 w-5 text-green-700 group-hover:text-green-900" />
+            ) : (
+              <Loader2 className="animate-spin text-neutral-800" />
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Approve</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

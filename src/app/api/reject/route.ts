@@ -51,27 +51,20 @@ const SESClient = new SESv2Client({
 //   await s3Client.send(new DeleteObjectCommand(deleteObjectParams));
 // };
 
-const updateDynamoDBItem = async (
-  fileId: string,
-  reason: string,
-  folder: string
-) => {
+const updateDynamoDBItem = async (fileId: string, reason: string) => {
   const params = {
     TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
     Key: {
       id: { S: fileId }
     },
-    UpdateExpression:
-      'SET #status = :statusValue, #reason = :reasonValue, #folder = :folderValue',
+    UpdateExpression: 'SET #status = :statusValue, #reason = :reasonValue',
     ExpressionAttributeNames: {
       '#status': 'status',
-      '#reason': 'reason',
-      '#folder': 'folder'
+      '#reason': 'reason'
     },
     ExpressionAttributeValues: {
       ':statusValue': { S: 'rejected' },
-      ':reasonValue': { S: reason },
-      ':folderValue': { S: 'rejected/' + folder }
+      ':reasonValue': { S: reason }
     },
     ReturnValues: 'ALL_NEW'
   };
@@ -82,11 +75,11 @@ const updateDynamoDBItem = async (
 };
 
 export async function POST(request: Request) {
-  const { fileId, folder, reason } = await request.json();
+  const { fileId, reason } = await request.json();
 
   try {
     // await updateS3ObjectKey(folder, fileName);
-    const response = await updateDynamoDBItem(fileId, reason, folder);
+    const response = await updateDynamoDBItem(fileId, reason);
 
     // send email confirmation
     const inputSES = {

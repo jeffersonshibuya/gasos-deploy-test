@@ -72,6 +72,22 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     }
   },
   {
+    id: 'file',
+    header: 'File',
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col">
+          <span className="mr-2 font-semibold text-gray-600">
+            {row.original.file}
+          </span>
+          <span className="text-sm text-gray-600">
+            (original: {row.original.originalFile})
+          </span>
+        </div>
+      );
+    }
+  },
+  {
     accessorKey: 'updated_at',
     header: 'Date',
     cell: ({ row }) => {
@@ -146,11 +162,7 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
             </>
           )}
           {row.original.status === 'approved' && (
-            <UnpublishAction
-              id={row.original.id}
-              fileName={row.original.file}
-              folder={row.original.folder}
-            />
+            <UnpublishAction id={row.original.id} />
           )}
           <DownloadAction
             fileName={row.original.file}

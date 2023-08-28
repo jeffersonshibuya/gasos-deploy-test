@@ -60,12 +60,12 @@ export default function FilesDataTable<TData, TValue>({
       <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className=''>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className='text-white border-r border-gray-200 bg-gray-400'>
                       {header.isPlaceholder
                         ? null
                         : flexRender(

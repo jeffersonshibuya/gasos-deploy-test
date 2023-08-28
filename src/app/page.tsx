@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import Heading from '@/components/Heading';
 
 export default async function Home() {
-  redirect('/list-public');
+  redirect('/list-county');
   return (
     <div>
       <Heading title="Dashboard" />

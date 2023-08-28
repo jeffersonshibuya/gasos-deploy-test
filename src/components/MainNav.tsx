@@ -18,20 +18,6 @@ export function MainNav({ className, ...props }: MainNavProps) {
 
   const routes = useMemo(
     () => [
-      // {
-      //   icon: Gauge,
-      //   label: 'Dashboard',
-      //   active: pathName === '/',
-      //   href: '/',
-      //   show: true
-      // },
-      {
-        icon: LayoutList,
-        label: 'List - Public',
-        active: pathName === '/list-public',
-        href: '/list-public',
-        show: true
-      },
       {
         icon: LayoutList,
         label: 'List - County',
@@ -44,6 +30,13 @@ export function MainNav({ className, ...props }: MainNavProps) {
         label: 'List - GA SOS',
         active: pathName === '/list-approval',
         href: '/list-approval',
+        show: true
+      },
+      {
+        icon: LayoutList,
+        label: 'List - Public',
+        active: pathName === '/list-public',
+        href: '/list-public',
         show: true
       }
       // {

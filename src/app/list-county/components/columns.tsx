@@ -23,67 +23,6 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     header: 'County'
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) => {
-      const status = countyStatuses.find(
-        (status) => status.value === row.getValue('status')
-      );
-
-      if (!status) {
-        return null;
-      }
-
-      return (
-        <div className="flex w-full items-center">
-          {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <div
-            className={cn(
-              'flex flex-col capitalize',
-              formatStatus(row.original.status)
-            )}
-          >
-            <span>{row.original.status}</span>
-            {typeof localStorage !== 'undefined' &&
-              localStorage.getItem(`upload-fail-${row.original.id}`) && (
-                <div className="flex items-center gap-2">
-                  <span className="text-red-500">Failed</span>
-                  <UploadAction data={row.original} />
-                </div>
-              )}
-
-            {row.original.status === 'rejected' && (
-              <div className="flex items-center gap-2">
-                <span>{row.original.reason}</span>
-                <UploadAction data={row.original} />
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    }
-    // cell: ({ row }) => {
-    //   return (
-    //     <div className="flex w-full flex-col items-start">
-    //       {localStorage.getItem('upload-fail') === row.original.uploadId ? (
-    //         <span>Failed</span>
-    //       ) : (
-    //         <span>{row.original.status}</span>
-    //       )}
-
-    //       {row.original.status === 'rejected' && (
-    //         <span className="block">{row.original.reason}</span>
-    //       )}
-    //     </div>
-    //   );
-    // }
-  },
-  {
     accessorKey: 'electionType',
     header: 'Election Type',
     cell: ({ row }) => {
@@ -113,6 +52,22 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     }
   },
   {
+    id: 'file',
+    header: 'File',
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col">
+          <span className="mr-2 font-semibold text-gray-600">
+            {row.original.file}
+          </span>
+          <span className="text-sm text-gray-600">
+            (original: {row.original.originalFile})
+          </span>
+        </div>
+      );
+    }
+  },
+  {
     accessorKey: 'created_at',
     header: 'Created',
     cell: ({ row }) => {
@@ -134,6 +89,52 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     header: 'Size',
     cell: ({ row }) => {
       return <span>{formatBytes(row.original.size)}</span>;
+    }
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => {
+      const status = countyStatuses.find(
+        (status) => status.value === row.getValue('status')
+      );
+
+      if (!status) {
+        return null;
+      }
+
+      return (
+        <div className="flex w-full items-center">
+          {status.icon && (
+            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+          )}
+          <div
+            className={cn(
+              'flex flex-col font-semibold capitalize',
+              formatStatus(row.original.status)
+            )}
+          >
+            <span>{row.original.status}</span>
+            {typeof localStorage !== 'undefined' &&
+              localStorage.getItem(`upload-fail-${row.original.id}`) && (
+                <div className="flex items-center gap-2">
+                  <span className="text-red-500">Failed</span>
+                  <UploadAction data={row.original} />
+                </div>
+              )}
+
+            {row.original.status === 'rejected' && (
+              <div className="flex items-center gap-2">
+                <span>Notes: {row.original.reason}</span>
+                <UploadAction data={row.original} />
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
     }
   },
   {
