@@ -43,6 +43,10 @@ export function DataTableRowActions<TData>({
   };
 
   const handleDownloadFile = async () => {
+    if (data.processStatus !== 'done') {
+      alert('Please wait until the file is processed');
+      return;
+    }
     const response = await axios.post('/api/download-file', {
       fileName: data.file,
       folder: data.folder,

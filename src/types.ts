@@ -23,6 +23,7 @@ export interface FilesDBResponseData {
   originalFile: string;
   folder: string;
   status: string;
+  processStatus: string;
   year: string;
   electionType: string;
   county?: string;

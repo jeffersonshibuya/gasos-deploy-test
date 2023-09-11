@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const signedUrl = await getSignedUrl(
       s3Client,
       new GetObjectCommand({
-        Bucket: process.env.NEXT_AWS_BUCKET_NAME,
+        Bucket: process.env.NEXT_AWS_BUCKET_DOWNLOAD_NAME,
         Key: `${fileName}`
       }),
       { expiresIn: 60 }

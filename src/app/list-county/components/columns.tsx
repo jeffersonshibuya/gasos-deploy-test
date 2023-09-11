@@ -1,5 +1,7 @@
 'use client';
 
+import { PuffLoader } from 'react-spinners';
+
 import { DataTableRowActions } from './actions/data-table-row-actions';
 import UploadAction from './actions/upload-action';
 
@@ -9,6 +11,7 @@ import { FilesDBResponseData } from '@/types';
 import { formatBytes } from '@/utils/format-bytes';
 import { formatStatus } from '@/utils/format-status';
 import { ColumnDef } from '@tanstack/react-table';
+import { Check } from 'lucide-react';
 
 export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
   {
@@ -89,6 +92,20 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     header: 'Size',
     cell: ({ row }) => {
       return <span>{formatBytes(row.original.size)}</span>;
+    }
+  },
+  {
+    accessorKey: 'processStatus',
+    header: 'Processing files',
+    cell: ({ row }) => {
+      return row.original.processStatus === 'done' ? (
+        <Check />
+      ) : (
+        <span className="flex items-center gap-1 font-semibold">
+          <PuffLoader size={28} />
+          {row.original.processStatus}...
+        </span>
+      );
     }
   },
   {

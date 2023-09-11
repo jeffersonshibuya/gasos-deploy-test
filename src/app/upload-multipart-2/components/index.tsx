@@ -154,6 +154,7 @@ export default function Upload() {
 
       return true;
     } catch (error) {
+      console.log(error)
       localStorage.setItem(`upload-fail-${id}`, startUploadId);
       setFileId(id);
       setFileStatus('failed');

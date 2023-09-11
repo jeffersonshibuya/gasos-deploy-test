@@ -1,7 +1,9 @@
+/* eslint-disable prettier/prettier */
 'use client';
 
 import ApprovalAction from './actions/approval-action';
 import DownloadAction from './actions/download-action';
+import ProcessingAction from './actions/processing-action';
 import RejectionAction from './actions/rejection-action';
 import UnpublishAction from './actions/unpublish-action';
 
@@ -151,24 +153,36 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center justify-end gap-2">
-          {row.original.status === 'awaiting-approval' && (
-            <>
-              <ApprovalAction
-                id={row.original.id}
-                fileName={row.original.file}
-                folder={row.original.folder}
-              />
-              <RejectionAction data={row.original} />
-            </>
-          )}
-          {row.original.status === 'approved' && (
-            <UnpublishAction id={row.original.id} />
-          )}
-          <DownloadAction
-            fileName={row.original.file}
-            folder={row.original.folder}
-            isPublic={row.original.isPublic || false}
-          />
+          {row.original.processStatus === 'done'
+            ? (
+              <>
+                {row.original.status === 'awaiting-approval' && (
+                  <>
+                    <ApprovalAction
+                      id={row.original.id}
+                      fileName={row.original.file}
+                      folder={row.original.folder}
+                    />
+                    <RejectionAction data={row.original} />
+                  </>
+                )}
+
+                {row.original.status === 'approved' && (
+                  <UnpublishAction id={row.original.id} />
+                )}
+
+                <DownloadAction
+                  fileName={row.original.file}
+                  folder={row.original.folder}
+                  isPublic={row.original.isPublic || false}
+                />
+              </>
+            ) : (
+              <ProcessingAction />
+            )
+          }
+
+
         </div>
       );
     }

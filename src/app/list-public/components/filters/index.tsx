@@ -107,8 +107,10 @@ export default function FilesFilter({
   }
 
   function handleSelectCounty(countySelected: SelectionDefaultType) {
-    if (countySelected.value) {
+    if (!countySelected.value) {
       form.clearErrors(['county']);
+      form.setValue('county', { label: '', value: '' });
+    } else {
       form.setValue('county', countySelected);
     }
   }
@@ -191,9 +193,10 @@ export default function FilesFilter({
                       <FormControl>
                         <Select
                           className="font-semibold text-primary"
-                          isClearable={false}
+                          isClearable
                           options={countyList}
                           value={field.value}
+                          placeholder="County"
                           onChange={(item: SelectionDefaultType) =>
                             handleSelectCounty(
                               item || ({} as SelectionDefaultType)

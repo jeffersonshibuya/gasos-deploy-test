@@ -5,13 +5,15 @@ import { useForm } from 'react-hook-form';
 
 import Heading from '../Heading';
 import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
+  FormDescription
 } from '../ui/form';
 import { Input } from '../ui/input';
 import Modal from './Modal';
@@ -26,7 +28,15 @@ const DownloadFormSchema = z.object({
   firstName: z.string().min(1, 'Please inform the First Name'),
   lastName: z.string().min(1, 'Please inform the Last Name'),
   organization: z.string().optional(),
-  email: z.string().email('Please provide a valid')
+  email: z.string().email('Please provide a valid'),
+  aknowledgement: z.boolean().refine(
+    (value) => {
+      return value !== false;
+    },
+    {
+      message: 'Required'
+    }
+  )
 });
 
 export default function DowloadModal() {
@@ -37,6 +47,23 @@ export default function DowloadModal() {
   const form = useForm<z.infer<typeof DownloadFormSchema>>({
     resolver: zodResolver(DownloadFormSchema)
   });
+
+  // useEffect(() => {
+  //   // Convert fileSizeMB to bits
+  //   const fileSizeBits = downloadModal.fileSelected.size * 8;
+
+  //   // Convert 100Mbps to bits per second
+  //   const downloadSpeedBps = 120 * 1024 * 1024;
+
+  //   // Calculate download time in seconds
+  //   const timeInSeconds = fileSizeBits / downloadSpeedBps;
+
+  //   // Convert seconds to minutes
+  //   console.log(timeInSeconds);
+  //   const minutes = Math.ceil(timeInSeconds / 60);
+
+  //   setDownloadTime(minutes);
+  // }, [downloadModal.fileSelected.size]);
 
   async function onSubmit(data: z.infer<typeof DownloadFormSchema>) {
     setIsLoading(true);
@@ -60,6 +87,7 @@ export default function DowloadModal() {
 
       window.location.href = response.data.signedUrl;
       setIsLoading(false);
+      form.reset();
       downloadModal.onClose();
     }
   }
@@ -87,7 +115,7 @@ export default function DowloadModal() {
                 )}
               />
             </div>
-            <div className="">
+            <div>
               <FormField
                 name="lastName"
                 render={({ field }) => (
@@ -101,7 +129,7 @@ export default function DowloadModal() {
                 )}
               />
             </div>
-            <div className="">
+            <div>
               <FormField
                 name="organization"
                 render={({ field }) => (
@@ -115,7 +143,7 @@ export default function DowloadModal() {
                 )}
               />
             </div>
-            <div className="">
+            <div>
               <FormField
                 name="email"
                 render={({ field }) => (
@@ -125,6 +153,33 @@ export default function DowloadModal() {
                       <Input placeholder="E-mail" {...field} />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="col-span-full">
+              <FormField
+                control={form.control}
+                name="aknowledgement"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        I understand that the file is large and may take time to
+                        download.
+                      </FormLabel>
+                      <FormDescription>
+                        Kindly note that the file&apos;s size is significant,
+                        which could lead to an extended download duration. Your
+                        awareness is appreciated.
+                      </FormDescription>
+                    </div>
                   </FormItem>
                 )}
               />
@@ -148,8 +203,8 @@ export default function DowloadModal() {
       className="mt-3  gap-1 border-t border-dashed border-neutral-300 pt-3 
       text-sm font-semibold text-neutral-600"
     >
-      {downloadModal.fileSelected.year} -
-      {downloadModal.fileSelected.electionType} -
+      {downloadModal.fileSelected.year} -{' '}
+      {downloadModal.fileSelected.electionType} -{' '}
       {formatBytes(downloadModal.fileSelected.size)}
     </div>
   );

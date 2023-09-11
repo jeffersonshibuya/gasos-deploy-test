@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { DataTableFacetedFilter } from './data-table-faceted-filter';
 import TableHeader from './table-header';
 
-import { counties, statuses, years } from '@/data/filesData';
+import { counties, electionTypes, statuses, years } from '@/data/filesData';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import { Table } from '@tanstack/react-table';
 
@@ -24,13 +24,6 @@ export default function DataTableToolbar<TData>({
       <div className="flex flex-1 items-center space-x-2">
         <TableHeader />
 
-        {table.getColumn('status') && (
-          <DataTableFacetedFilter
-            column={table.getColumn('status')}
-            title="Status"
-            options={statuses}
-          />
-        )}
         {table.getColumn('county') && (
           <DataTableFacetedFilter
             column={table.getColumn('county')}
@@ -38,6 +31,21 @@ export default function DataTableToolbar<TData>({
             options={counties}
           />
         )}
+        {table.getColumn('status') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('status')}
+            title="Status"
+            options={statuses}
+          />
+        )}
+        {table.getColumn('electionType') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('electionType')}
+            title="Election Type"
+            options={electionTypes}
+          />
+        )}
+
         {table.getColumn('year') && (
           <DataTableFacetedFilter
             column={table.getColumn('year')}

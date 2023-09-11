@@ -2,6 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { PuffLoader } from 'react-spinners';
 
 import { Progress } from '../ui/progress';
 import Modal from './Modal';
@@ -90,7 +91,14 @@ export default function UploadProgressModal() {
                     Status
                   </dt>
                   <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0 capitalize font-semibold">
-                    <span className={`${formatStatus(fileData.status)}`}>{fileData.status}</span>
+                    {fileData.processStatus !== 'done' ?
+                      <span className='flex items-center gap-2'>
+                        <PuffLoader size={30} />
+                        {fileData.processStatus}...
+                      </span>
+                      :
+                      <span className={`${formatStatus(fileData.status)}`}>{fileData.status}</span>
+                    }
                   </dd>
                 </div>
                 {fileData.status === 'rejected' && <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-6 sm:px-0">

@@ -27,19 +27,10 @@ export const FilterFormSchema = z.object({
         message: 'Election Type is Required'
       }
     ),
-  county: z
-    .object({
-      label: z.string(),
-      value: z.string()
-    })
-    .refine(
-      (value) => {
-        return value.value && value.value !== '';
-      },
-      {
-        message: 'County is Required'
-      }
-    )
+  county: z.object({
+    label: z.string(),
+    value: z.string()
+  })
 });
 
 export type year = z.infer<typeof FilterFormSchema>;

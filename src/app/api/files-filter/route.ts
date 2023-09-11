@@ -21,12 +21,12 @@ export async function POST(request: Request) {
     ':isPublicValue': { BOOL: true }
   }
 
-  if (electionType !== undefined) {
+  if (electionType) {
     filterExpression += ' AND electionType = :electionTypeValue'
     expressionValues[':electionTypeValue'] = { S: electionType }
   }
 
-  if (county !== undefined) {
+  if (county) {
     filterExpression += ' AND county = :countyValue';
     expressionValues[':countyValue'] = { S: county }
   }
