@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
-import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
+import { SESv2Client } from '@aws-sdk/client-sesv2';
 
 const client = new DynamoDBClient({
   region: process.env.NEXT_AWS_REGION,
@@ -11,7 +11,7 @@ const client = new DynamoDBClient({
   }
 });
 
-// const s3Client = new S3Client({
+// const SESClient = new SESv2Client({
 //   region: process.env.NEXT_AWS_REGION,
 //   credentials: {
 //     accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
@@ -19,52 +19,25 @@ const client = new DynamoDBClient({
 //   }
 // });
 
-const SESClient = new SESv2Client({
-  region: process.env.NEXT_AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.NEXT_AWS_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.NEXT_AWS_SECRET_ACCESS_KEY || ''
-  }
-});
-
-// const updateS3ObjectKey = async (folder: string, fileName: string) => {
-//   // Move files to public folder
-//   const sourceKey = `${folder}/${fileName}`;
-//   const destinationKey = `public/${sourceKey}`;
-//   const bucketName = process.env.NEXT_AWS_BUCKET_NAME;
-
-//   // Create a CopyObjectCommand to copy the file to the new location
-//   const copyObjectParams = {
-//     CopySource: `/${bucketName}/${sourceKey}`,
-//     Bucket: bucketName,
-//     Key: destinationKey
-//   };
-
-//   await s3Client.send(new CopyObjectCommand(copyObjectParams));
-
-//   // Delete the original file (if needed)
-//   const deleteObjectParams = {
-//     Bucket: bucketName,
-//     Key: sourceKey
-//   };
-
-//   await s3Client.send(new DeleteObjectCommand(deleteObjectParams));
-// };
-
 const updateDynamoDBItem = async (fileId: string) => {
   const params = {
     TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
     Key: {
       id: { S: fileId }
     },
-    UpdateExpression: 'SET #status = :statusValue, #isPublic = :isPublicValue',
+    UpdateExpression:
+      'SET #status = :statusValue, #reason = :reasonValue, #isPublic = :isPublicValue, #updatedAt = :updatedAtValue',
     ExpressionAttributeNames: {
       '#status': 'status',
-      '#isPublic': 'isPublic'
+      '#isPublic': 'isPublic',
+      '#reason': 'reason',
+      '#updatedAt': 'updated_at'
     },
     ExpressionAttributeValues: {
       ':statusValue': { S: 'approved' },
-      ':isPublicValue': { BOOL: true }
+      ':isPublicValue': { BOOL: true },
+      ':reasonValue': { S: '' },
+      ':updatedAtValue': { S: new Date().toISOString() }
     },
     ReturnValues: 'ALL_NEW'
   };
@@ -83,29 +56,29 @@ export async function POST(request: Request) {
     const response = await updateDynamoDBItem(fileId);
 
     // send email confirmation
-    const inputSES = {
-      // SendEmailRequest
-      FromEmailAddress: 'jefferson.shibuya@ipc-global.com',
-      Destination: {
-        // Destination
-        ToAddresses: ['jeffersonshibuya@yahoo.com.br']
-      },
-      Content: {
-        Simple: {
-          Subject: {
-            Data: 'File Approved'
-          },
-          Body: {
-            Text: {
-              Data: `Thank you for your upload. Your file was APPROVED and it's available for public access`
-            }
-          }
-        }
-      }
-    };
+    // const inputSES = {
+    //   // SendEmailRequest
+    //   FromEmailAddress: 'jefferson.shibuya@ipc-global.com',
+    //   Destination: {
+    //     // Destination
+    //     ToAddresses: ['jeffersonshibuya@yahoo.com.br']
+    //   },
+    //   Content: {
+    //     Simple: {
+    //       Subject: {
+    //         Data: 'File Approved'
+    //       },
+    //       Body: {
+    //         Text: {
+    //           Data: `Thank you for your upload. Your file was APPROVED and it's available for public access`
+    //         }
+    //       }
+    //     }
+    //   }
+    // };
 
-    const commandSES = new SendEmailCommand(inputSES);
-    await SESClient.send(commandSES);
+    // const commandSES = new SendEmailCommand(inputSES);
+    // await SESClient.send(commandSES);
 
     return NextResponse.json(response);
   } catch (error) {

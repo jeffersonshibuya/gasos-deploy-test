@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import MenuItem from './MenuItem';
 
 import { cn } from '@/lib/utils';
-import { LayoutList } from 'lucide-react';
+import { LayoutList, FileSpreadsheet } from 'lucide-react';
 
 interface MainNavProps {
   className: string;
@@ -18,6 +18,13 @@ export function MainNav({ className, ...props }: MainNavProps) {
 
   const routes = useMemo(
     () => [
+      {
+        icon: LayoutList,
+        label: 'Dashboard',
+        active: pathName === '/dashboard',
+        href: '/dashboard',
+        show: true
+      },
       {
         icon: LayoutList,
         label: 'List - County',
@@ -37,6 +44,13 @@ export function MainNav({ className, ...props }: MainNavProps) {
         label: 'List - Public',
         active: pathName === '/list-public',
         href: '/list-public',
+        show: true
+      },
+      {
+        icon: FileSpreadsheet,
+        label: 'Report - Public',
+        active: pathName === '/list-report-public',
+        href: '/list-report-public',
         show: true
       }
       // {

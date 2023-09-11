@@ -26,7 +26,7 @@ export interface FilesDBResponseData {
   processStatus: string;
   year: string;
   electionType: string;
-  county?: string;
+  county: string;
   created_at: string;
   updated_at?: string;
   size: number;
@@ -35,6 +35,18 @@ export interface FilesDBResponseData {
   uploadId: string;
   totalChunks: number;
   totalPartsUploaded?: number;
+}
+
+export interface FilesReportPublicDBResponseData {
+  id: string;
+  email: string;
+  county: string;
+  date_requested: string;
+  electionType: string;
+  year: string;
+  firstName: string;
+  lastName: string;
+  organization?: string;
 }
 
 export interface FilesResponseDataGrouped {

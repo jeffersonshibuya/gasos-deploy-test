@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import { marshall } from '@aws-sdk/util-dynamodb';
+import { randomUUID } from 'crypto';
 
 const client = new DynamoDBClient({
   region: process.env.NEXT_AWS_REGION,
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
 
   try {
     const item = {
+      id: randomUUID(),
       email,
       firstName,
       lastName,

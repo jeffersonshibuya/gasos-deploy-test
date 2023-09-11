@@ -75,9 +75,6 @@ export default function UploadProgressModal() {
         <div className="flex flex-col gap-4">
           <div>
             <div className="px-4 sm:px-0">
-              {/* <h3 className="text-base font-semibold leading-7 text-gray-900">
-                File Info
-              </h3> */}
               <div className="mt-1 flex flex-col space-y-1 text-sm text-gray-500">
                 <span><strong>Year:</strong> {fileData.year}</span>
                 <span><strong>Election Type:</strong> {fileData.electionType}</span>
