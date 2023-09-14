@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       }))
       .sort((a, b) => a.PartNumber - b.PartNumber);
 
-    const completeUploadResponse = await s3Client.send(
+    const response = await s3Client.send(
       new CompleteMultipartUploadCommand({
         Bucket: process.env.NEXT_AWS_BUCKET_NAME,
         Key: fileName,
@@ -58,53 +58,55 @@ export async function POST(request: Request) {
       })
     );
 
-    if (completeUploadResponse.$metadata?.httpStatusCode === 200) {
-      const input = {
-        TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
-        Key: {
-          id: { S: id }
-        },
-        UpdateExpression:
-          'SET #statusAttr = :statusValue, #updatedAt = :updatedAtValue',
-        ExpressionAttributeNames: {
-          '#statusAttr': 'status',
-          '#updatedAt': 'updated_at'
-        },
-        ExpressionAttributeValues: {
-          ':statusValue': { S: 'awaiting-approval' },
-          ':updatedAtValue': { S: new Date().toISOString() }
-        },
-        ReturnValues: 'ALL_NEW'
-      };
+    return NextResponse.json({});
 
-      const command = new UpdateItemCommand(input);
-      const response = await ddbClient.send(command);
+    // if (completeUploadResponse.$metadata?.httpStatusCode === 200) {
+    //   const input = {
+    //     TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
+    //     Key: {
+    //       id: { S: id }
+    //     },
+    //     UpdateExpression:
+    //       'SET #statusAttr = :statusValue, #updatedAt = :updatedAtValue',
+    //     ExpressionAttributeNames: {
+    //       '#statusAttr': 'status',
+    //       '#updatedAt': 'updated_at'
+    //     },
+    //     ExpressionAttributeValues: {
+    //       ':statusValue': { S: 'awaiting-approval' },
+    //       ':updatedAtValue': { S: new Date().toISOString() }
+    //     },
+    //     ReturnValues: 'ALL_NEW'
+    //   };
 
-      // send email confirmation
-      const inputSES = {
-        FromEmailAddress: 'jefferson.shibuya@ipc-global.com',
-        Destination: {
-          ToAddresses: ['jeffersonshibuya@yahoo.com.br']
-        },
-        Content: {
-          Simple: {
-            Subject: {
-              Data: 'File Uploaded'
-            },
-            Body: {
-              Text: {
-                Data: 'Your file was uploaded. GA SOS Admins will check and let you know if approved'
-              }
-            }
-          }
-        }
-      };
+    //   const command = new UpdateItemCommand(input);
+    //   const response = await ddbClient.send(command);
 
-      const commandSES = new SendEmailCommand(inputSES);
-      await SESClient.send(commandSES);
+    //   // send email confirmation
+    //   const inputSES = {
+    //     FromEmailAddress: 'jefferson.shibuya@ipc-global.com',
+    //     Destination: {
+    //       ToAddresses: ['jeffersonshibuya@yahoo.com.br']
+    //     },
+    //     Content: {
+    //       Simple: {
+    //         Subject: {
+    //           Data: 'File Uploaded'
+    //         },
+    //         Body: {
+    //           Text: {
+    //             Data: 'Your file was uploaded. GA SOS Admins will check and let you know if approved'
+    //           }
+    //         }
+    //       }
+    //     }
+    //   };
 
-      return NextResponse.json(unmarshall(response.Attributes || {}));
-    }
+    //   const commandSES = new SendEmailCommand(inputSES);
+    //   await SESClient.send(commandSES);
+
+    //   return NextResponse.json(unmarshall(response.Attributes || {}));
+    // }
   } catch (error) {
     console.log(error);
     return NextResponse.json(error);

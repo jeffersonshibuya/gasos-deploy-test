@@ -6,6 +6,7 @@ import { MainNav } from '@/components/MainNav';
 import DownloadModal from '@/components/modals/DownloadModal';
 import LoginModal from '@/components/modals/LoginModal';
 import RejectModal from '@/components/modals/RejectModal';
+import StatusHistoryModal from '@/components/modals/StatusHistoryModal';
 import UploadFolderModal from '@/components/modals/UploadFolderModal';
 import UploadProgressModal from '@/components/modals/UploadProgressModal';
 import { UserNav } from '@/components/UserNav';
@@ -35,6 +36,7 @@ export default async function RootLayout({
         <UploadProgressModal />
         <RejectModal />
         <UploadFolderModal />
+        <StatusHistoryModal />
         <ToasterProvider />
         <div className="flex-col md:flex">
           <div className="border-b">

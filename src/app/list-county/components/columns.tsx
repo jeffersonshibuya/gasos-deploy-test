@@ -103,7 +103,7 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
       ) : (
         <span className="flex items-center gap-1 font-semibold">
           <PuffLoader size={28} />
-          {row.original.processStatus}...
+          In Progress
         </span>
       );
     }

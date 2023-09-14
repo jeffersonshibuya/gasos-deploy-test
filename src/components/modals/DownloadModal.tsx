@@ -48,23 +48,6 @@ export default function DowloadModal() {
     resolver: zodResolver(DownloadFormSchema)
   });
 
-  // useEffect(() => {
-  //   // Convert fileSizeMB to bits
-  //   const fileSizeBits = downloadModal.fileSelected.size * 8;
-
-  //   // Convert 100Mbps to bits per second
-  //   const downloadSpeedBps = 120 * 1024 * 1024;
-
-  //   // Calculate download time in seconds
-  //   const timeInSeconds = fileSizeBits / downloadSpeedBps;
-
-  //   // Convert seconds to minutes
-  //   console.log(timeInSeconds);
-  //   const minutes = Math.ceil(timeInSeconds / 60);
-
-  //   setDownloadTime(minutes);
-  // }, [downloadModal.fileSelected.size]);
-
   async function onSubmit(data: z.infer<typeof DownloadFormSchema>) {
     setIsLoading(true);
 

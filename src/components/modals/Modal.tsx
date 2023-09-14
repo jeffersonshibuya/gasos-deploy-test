@@ -8,7 +8,7 @@ import { Button } from '../ui/button';
 interface ModalProps {
   isOpen?: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   title?: string;
   body?: ReactElement;
   footer?: ReactElement;
@@ -48,7 +48,7 @@ export default function Modal({
   const handleSubmit = useCallback(() => {
     if (disabled) return;
 
-    onSubmit();
+    onSubmit && onSubmit();
   }, [disabled, onSubmit]);
 
   const handleSecondaryAction = useCallback(() => {
@@ -65,73 +65,70 @@ export default function Modal({
     <>
       <div
         className="
-          fixed 
-          inset-0 
-          z-50 
-          flex 
-          items-center 
-          justify-center 
-          overflow-y-auto 
-          overflow-x-hidden 
-          bg-neutral-800/70 
-          outline-none
-          focus:outline-none
-        "
+    fixed
+    inset-0 
+    z-50 
+    flex 
+    items-center 
+    justify-center 
+    overflow-y-auto 
+    overflow-x-hidden 
+    bg-neutral-800/70 
+    outline-none
+    focus:outline-none
+  "
       >
         <div
           className="
-          relative 
-          mx-auto
-          my-6
-          h-full
-          w-full
-          md:h-auto
-          md:w-4/6 
-          lg:h-auto 
-          lg:w-3/6
-          xl:w-2/5
+            md:max-h-auto 
+            lg:max-h-auto
+            relative
+            mx-auto
+            my-6
+            max-h-screen
+            w-full 
+            md:w-4/6 
+            lg:w-3/6
+            xl:w-2/5
           "
         >
           {/*content*/}
           <div
             className={`
-            translate
-            h-full
-            duration-300
-            ${showModal ? 'translate-y-0' : 'translate-y-full'}
-            ${showModal ? 'opacity-100' : 'opacity-0'}
-          `}
+              translate
+              duration-300
+              ${showModal ? 'translate-y-0' : 'translate-y-full'}
+              ${showModal ? 'opacity-100' : 'opacity-0'}
+            `}
           >
             <div
               className="
-              translate
-              relative
-              flex
-              h-full
-              w-full 
-              flex-col 
-              rounded-lg 
-              border-0 
-              bg-white 
-              shadow-lg 
-              outline-none 
-              focus:outline-none 
-              md:h-auto 
-              lg:h-auto
-            "
+                translate
+                relative
+                flex
+                flex-col
+                rounded-lg
+                border-0
+                bg-white
+                shadow-lg
+                outline-none
+                focus:outline-none
+                md:h-auto
+                lg:h-auto
+              "
             >
               {/*header*/}
               <div
                 className="
-                relative 
-                flex 
-                items-center
-                justify-center
-                rounded-t
-                border-b-[1px]
-                bg-secondary
-                p-6
-                text-white
+                  relative 
+                  flex 
+                  items-center
+                  justify-center
+                  rounded-t
+                  border-b-[1px]
+                  bg-secondary
+                  p-6
+                  text-white
                 "
               >
                 <button

@@ -35,6 +35,12 @@ export interface FilesDBResponseData {
   uploadId: string;
   totalChunks: number;
   totalPartsUploaded?: number;
+  status_history: StatusHistoryResponse[];
+}
+
+export interface StatusHistoryResponse {
+  change_date: string;
+  status: string;
 }
 
 export interface FilesReportPublicDBResponseData {

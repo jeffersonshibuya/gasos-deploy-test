@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 
-import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
+import {
+  DynamoDBClient,
+  UpdateItemCommand,
+  PutItemCommand
+} from '@aws-sdk/client-dynamodb';
 import {
   CreateMultipartUploadCommand,
   S3Client,
@@ -44,29 +48,67 @@ export async function POST(request: Request) {
       })
     );
 
-    const item = {
-      id,
-      file: fileName,
-      originalFile,
-      status: 'uploading',
-      isPublic: false,
-      year,
-      electionType,
-      size,
-      county,
-      totalChunks,
-      uploadId: s3Response.UploadId,
-      created_at: new Date().toISOString()
-    };
+    // const item = {
+    //   id,
+    //   file: fileName,
+    //   originalFile,
+    //   status: 'uploading',
+    //   isPublic: false,
+    //   year,
+    //   electionType,
+    //   size,
+    //   county,
+    //   totalChunks,
+    //   uploadId: s3Response.UploadId,
+    //   created_at: new Date().toISOString()
+    // };
 
-    const marshallItem = marshall(item);
+    // const marshallItem = marshall(item);
 
     const input = {
       TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
-      Item: marshallItem
+      Key: {
+        id: { S: id }
+      },
+      UpdateExpression: `SET #statusAttr = :statusValue, updated_at = :updatedAtValue,
+        created_at = :createdAtValue,
+        #fileAttr = :fileValue,
+        originalFile = :originalFileValue,
+        isPublic = :isPublicValue,
+        #yearAttr = :yearValue,
+        electionType = :electionTypeValue,
+        size = :sizeValue,
+        county = :countyValue,
+        totalChunks = :totalChunksValue,
+        uploadId = :uploadIdValue
+      `,
+      ExpressionAttributeNames: {
+        '#statusAttr': 'status',
+        '#fileAttr': 'file',
+        '#yearAttr': 'year'
+      },
+      ExpressionAttributeValues: {
+        ':statusValue': { S: 'uploading' },
+        ':updatedAtValue': { S: new Date().toISOString() },
+        ':createdAtValue': { S: new Date().toISOString() },
+        ':fileValue': { S: fileName },
+        ':originalFileValue': { S: originalFile },
+        ':isPublicValue': { BOOL: false },
+        ':yearValue': { S: year },
+        ':electionTypeValue': { S: electionType },
+        ':sizeValue': { S: size.toString() },
+        ':countyValue': { S: county },
+        ':totalChunksValue': { S: totalChunks.toString() },
+        ':uploadIdValue': { S: s3Response.UploadId || '' }
+      }
     };
 
-    const command = new PutItemCommand(input);
+    // const input = {
+    //   TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
+    //   Item: marshallItem
+    // };
+
+    const command = new UpdateItemCommand(input);
     await ddbClient.send(command);
 
     return NextResponse.json(s3Response);

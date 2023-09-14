@@ -4,6 +4,7 @@ import {
   UploadIcon,
   TimerIcon
 } from '@radix-ui/react-icons';
+import { RotateCcw } from 'lucide-react';
 
 export const electionTypes = [
   {
@@ -222,6 +223,11 @@ export const statuses = [
     value: 'rejected',
     label: 'Rejected',
     icon: CrossCircledIcon
+  },
+  {
+    value: 'processing',
+    label: 'Processing',
+    icon: RotateCcw
   }
 ];
 
@@ -245,5 +251,10 @@ export const countyStatuses = [
     value: 'uploading',
     label: 'Uploading',
     icon: UploadIcon
+  },
+  {
+    value: 'processing',
+    label: 'Processing',
+    icon: RotateCcw
   }
 ];

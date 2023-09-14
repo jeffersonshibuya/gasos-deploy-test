@@ -5,6 +5,7 @@ import ApprovalAction from './actions/approval-action';
 import DownloadAction from './actions/download-action';
 import ProcessingAction from './actions/processing-action';
 import RejectionAction from './actions/rejection-action';
+import StatusHistoryAction from './actions/status-history-action';
 import UnpublishAction from './actions/unpublish-action';
 
 import { counties, electionTypes, statuses } from '@/data/filesData';
@@ -176,6 +177,8 @@ export const filesColumns: ColumnDef<FilesDBResponseData>[] = [
                   folder={row.original.folder}
                   isPublic={row.original.isPublic || false}
                 />
+
+                <StatusHistoryAction status_history={row.original.status_history} />
               </>
             ) : (
               <ProcessingAction />

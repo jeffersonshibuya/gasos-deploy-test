@@ -10,6 +10,5 @@ export async function GetFiles() {
   } catch (err) {
     console.error('Error on fetching List Files');
     throw err;
-    // throw new Error(JSON.stringify(err.message));
   }
 }
