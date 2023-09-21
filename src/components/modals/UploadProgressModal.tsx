@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react';
 import { PuffLoader } from 'react-spinners';
 
+import { Button } from '../ui/button';
 import { Progress } from '../ui/progress';
 import Modal from './Modal';
 
@@ -48,7 +49,7 @@ export default function UploadProgressModal() {
         !localStorage.getItem(`upload-fail-${response.data.id}`)
       ) {
         setUploadProgress(true)
-        setTimeout(getFileData, 2000);
+        // setTimeout(getFileData, 2000);
       } else {
         setUploadProgress(false);
       }
@@ -167,7 +168,8 @@ export default function UploadProgressModal() {
                 <div className="px-4 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                   <dt className="text-gray-900 text-sm font-medium leading-6  flex items-center gap-2">
                     Progress
-                    {uploadProgress && <Loader2 className='animate-spin' size={16} />}
+                    {uploadProgress && <Button onClick={getFileData} size={'icon'} variant={'default'} className='bg-gray-100 hover:bg-gray-200'>
+                      <Loader2 className='text-primary' size={18} /></Button>}
                   </dt>
                   <dd className="mt-3 pt-2 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                     <div className="flex items-center gap-2">

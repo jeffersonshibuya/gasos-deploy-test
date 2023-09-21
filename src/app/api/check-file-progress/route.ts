@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   const fileItem = response.Items?.map((item) => unmarshall(item))[0] || [];
 
   const inputEtags = {
-    TableName: 'gasos-upload-progress',
+    TableName: process.env.NEXT_AWS_DYNAMODB_UPLOAD_PROGRESS_TABLE_NAME,
     FilterExpression: '#uploadId = :uploadIdValue',
     ExpressionAttributeNames: {
       '#uploadId': 'uploadId'
@@ -79,7 +79,7 @@ export async function GET() {
     const fileData = response.Items?.map((item) => unmarshall(item))[0] || [];
 
     const inputTags = {
-      TableName: 'gasos-upload-progress',
+      TableName: process.env.NEXT_AWS_DYNAMODB_UPLOAD_PROGRESS_TABLE_NAME,
       Select: 'COUNT',
       ExpressionAttributeValues: { ':uploadIdValue': { S: uploadId } },
       KeyConditionExpression: 'uploadId = :uploadIdValue'

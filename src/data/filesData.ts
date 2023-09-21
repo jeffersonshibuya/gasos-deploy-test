@@ -210,6 +210,11 @@ export const counties = [
 
 export const statuses = [
   {
+    value: 'uploading',
+    label: 'Uploading',
+    icon: UploadIcon
+  },
+  {
     value: 'awaiting-approval',
     label: 'Awaiting-approval',
     icon: TimerIcon

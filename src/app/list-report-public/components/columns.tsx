@@ -34,6 +34,13 @@ export const filesColumns: ColumnDef<FilesReportPublicDBResponseData>[] = [
     }
   },
   {
+    id: 'organization',
+    header: 'Organization',
+    cell: ({ row }) => {
+      return <span> {row.original.organization || '-'}</span>
+    }
+  },
+  {
     accessorKey: 'county',
     header: 'County',
     cell: ({ row }) => {

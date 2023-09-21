@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   try {
     // get upload parts
     const inputParts = {
-      TableName: 'gasos-upload-progress',
+      TableName: process.env.NEXT_AWS_DYNAMODB_UPLOAD_PROGRESS_TABLE_NAME,
       FilterExpression: '#uploadId = :uploadIdValue',
       ExpressionAttributeNames: {
         '#uploadId': 'uploadId'
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       })
     );
 
-    return NextResponse.json({});
+    return NextResponse.json({ response });
 
     // if (completeUploadResponse.$metadata?.httpStatusCode === 200) {
     //   const input = {
@@ -109,6 +109,6 @@ export async function POST(request: Request) {
     // }
   } catch (error) {
     console.log(error);
-    return NextResponse.json(error);
+    return NextResponse.error();
   }
 }

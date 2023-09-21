@@ -48,23 +48,6 @@ export async function POST(request: Request) {
       })
     );
 
-    // const item = {
-    //   id,
-    //   file: fileName,
-    //   originalFile,
-    //   status: 'uploading',
-    //   isPublic: false,
-    //   year,
-    //   electionType,
-    //   size,
-    //   county,
-    //   totalChunks,
-    //   uploadId: s3Response.UploadId,
-    //   created_at: new Date().toISOString()
-    // };
-
-    // const marshallItem = marshall(item);
-
     const input = {
       TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
       Key: {
@@ -102,11 +85,6 @@ export async function POST(request: Request) {
         ':uploadIdValue': { S: s3Response.UploadId || '' }
       }
     };
-
-    // const input = {
-    //   TableName: process.env.NEXT_AWS_DYNAMODB_TABLE_NAME,
-    //   Item: marshallItem
-    // };
 
     const command = new UpdateItemCommand(input);
     await ddbClient.send(command);
@@ -149,7 +127,7 @@ export async function PUT(request: Request) {
     const marshallItem = marshall(item);
 
     const input = {
-      TableName: 'gasos-upload-progress',
+      TableName: process.env.NEXT_AWS_DYNAMODB_UPLOAD_PROGRESS_TABLE_NAME,
       Item: marshallItem
     };
 
@@ -159,6 +137,6 @@ export async function PUT(request: Request) {
     return NextResponse.json(uploadPartResponse);
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error });
+    return NextResponse.error();
   }
 }

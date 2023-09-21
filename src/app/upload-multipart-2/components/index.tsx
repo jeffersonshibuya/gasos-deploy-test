@@ -75,27 +75,32 @@ export default function Upload() {
     const chunkSize = 10 * 1024 * 1024;
     const totalChunks = Math.ceil((fileUpload?.file?.size || 1) / chunkSize);
 
-    const response = await axios.post('/api/upload-multipart', {
-      fileName,
-      year,
-      originalFile,
-      electionType,
-      size: fileUpload?.file.size,
-      county,
-      id,
-      totalChunks
-    });
+    try {
+      const response = await axios.post('/api/upload-multipart', {
+        fileName,
+        year,
+        originalFile,
+        electionType,
+        size: fileUpload?.file.size,
+        county,
+        id,
+        totalChunks
+      });
 
-    if (response.data.$metadata?.httpStatusCode !== 200) {
-      alert('Something went wrong');
+      if (response.data.$metadata?.httpStatusCode !== 200) {
+        alert('Something went wrong');
+        return null;
+      }
+
+      setFileStatus('loading');
+
+      const uploadIdResponse = response.data.UploadId;
+
+      return uploadIdResponse;
+    } catch (error) {
+      toast.error('Error on upload file!')
       return null;
     }
-
-    setFileStatus('loading');
-
-    const uploadIdResponse = response.data.UploadId;
-
-    return uploadIdResponse;
   }
 
   async function UploadParts(
@@ -153,13 +158,14 @@ export default function Upload() {
       }
 
       return true;
+
     } catch (error) {
       console.log(error)
       localStorage.setItem(`upload-fail-${id}`, startUploadId);
       setFileId(id);
       setFileStatus('failed');
 
-      return null;
+      throw new Error()
     }
   }
 
@@ -194,67 +200,73 @@ export default function Upload() {
 
     const fileNameFormatted = fileName + '.zip';
 
-    // check file is already upload for this id
-    const checkFileResponse = await axios.post('/api/check-county-upload', {
-      county,
-      year,
-      electionType
-    });
-
-    if (checkFileResponse.data.isValid) {
-      setUploading(true);
-      const id = `${year}-${electionType}-${county}`.trim().replace(/\s/g, '_');
-      setFileId(id);
-
-      // Start Upload
-      const startUploadId = await handleStartUpload(
-        id,
-        fileNameFormatted,
-        fileUpload?.file.name,
+    try {
+      // check file is already upload for this id
+      const checkFileResponse = await axios.post('/api/check-county-upload', {
+        county,
         year,
-        electionType,
-        county
-      );
+        electionType
+      });
 
-      if (startUploadId) {
-        // Upload parts
-        const uploadedParts = await UploadParts(
-          startUploadId,
+      if (checkFileResponse.data.isValid) {
+        setUploading(true);
+        const id = `${year}-${electionType}-${county}`.trim().replace(/\s/g, '_');
+        setFileId(id);
+
+        // Start Upload
+        const startUploadId = await handleStartUpload(
           id,
-          fileNameFormatted
+          fileNameFormatted,
+          fileUpload?.file.name,
+          year,
+          electionType,
+          county
         );
 
-        if (uploadedParts) {
-          // Complete the multipart upload
-          await CompleteUpload(startUploadId, id, fileNameFormatted);
-        }
-      }
+        if (startUploadId) {
+          // Upload parts
+          const uploadedParts = await UploadParts(
+            startUploadId,
+            id,
+            fileNameFormatted
+          );
 
-      setUploading(false);
-    } else {
-      toast.custom((t) => (
-        <div
-          className={`${t.visible ? 'animate-enter' : 'animate-leave'
-            } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
-        >
-          <div className="flex-1 w-0 p-4">
-            <div className="flex items-start">
-              <div className="flex-shrink-0 my-auto">
-                <Ban color="red" />
-              </div>
-              <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-gray-900">
-                  File already uploaded
-                </p>
-                <p className="mt-1 text-sm text-gray-500">
-                  Current Status: <span className='font-semibold capitalize'>{checkFileResponse.data.status}</span>
-                </p>
+          if (uploadedParts) {
+            // Complete the multipart upload
+            await CompleteUpload(startUploadId, id, fileNameFormatted);
+          }
+        }
+
+        setUploading(false);
+      } else {
+        toast.custom((t) => (
+          <div
+            className={`${t.visible ? 'animate-enter' : 'animate-leave'
+              } max-w-md w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5`}
+          >
+            <div className="flex-1 w-0 p-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 my-auto">
+                  <Ban color="red" />
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    File already uploaded
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Current Status: <span className='font-semibold capitalize'>{checkFileResponse.data.status}</span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))
+        ))
+      }
+    } catch (error) {
+      setUploading(false);
+      toast.error('Something went wrong!')
     }
+
   };
 
   const handleRemoveFile = () => {
@@ -312,6 +324,8 @@ export default function Upload() {
       setFileFailed(fileData.originalFile);
       setFileStatus('failed');
       setFileId(fileData.id);
+    } else {
+      uploadCounty.setFileData({ ...uploadCounty.fileData, county: searchParams?.get('county') || '' })
     }
     setIsLoading(false);
   }, [chunkSize, uploadCounty]);
@@ -329,6 +343,7 @@ export default function Upload() {
     } else {
       checkUploadFail();
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
