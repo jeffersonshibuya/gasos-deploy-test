@@ -1,17 +1,8 @@
 /* eslint-disable prettier/prettier */
 'use client';
 
-import ApprovalAction from './actions/approval-action';
-import DownloadAction from './actions/download-action';
-import ProcessingAction from './actions/processing-action';
-import RejectionAction from './actions/rejection-action';
-import UnpublishAction from './actions/unpublish-action';
-
-import { counties, electionTypes, statuses } from '@/data/filesData';
-import { cn } from '@/lib/utils';
+import { counties, electionTypes } from '@/data/filesData';
 import { FilesReportPublicDBResponseData } from '@/types';
-import { formatBytes } from '@/utils/format-bytes';
-import { formatStatus } from '@/utils/format-status';
 import { ColumnDef } from '@tanstack/react-table';
 
 export const filesColumns: ColumnDef<FilesReportPublicDBResponseData>[] = [

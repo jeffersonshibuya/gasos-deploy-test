@@ -328,6 +328,7 @@ export default function Upload() {
       uploadCounty.setFileData({ ...uploadCounty.fileData, county: searchParams?.get('county') || '' })
     }
     setIsLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chunkSize, uploadCounty]);
 
   useEffect(() => {

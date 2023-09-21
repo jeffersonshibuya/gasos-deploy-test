@@ -1,7 +1,5 @@
 'use client';
 
-import Heading from '../Heading';
-import { ScrollArea } from '../ui/scroll-area';
 import Modal from './Modal';
 
 import useStatusHistoryModal from '@/hooks/useStatusHistoryModal';

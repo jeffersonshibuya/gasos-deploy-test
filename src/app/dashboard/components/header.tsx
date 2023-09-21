@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -11,7 +12,7 @@ export default function Header() {
   const router = useRouter();
 
   const currentYear = new Date().getFullYear().toString();
-  const [year, setYear] = useState({
+  const [_, setYear] = useState({
     label: currentYear,
     value: currentYear
   });

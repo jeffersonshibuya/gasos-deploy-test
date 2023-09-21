@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 
 import { DynamoDBClient, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
-import { SESv2Client } from '@aws-sdk/client-sesv2';
 
 const client = new DynamoDBClient({
   region: process.env.NEXT_AWS_REGION,

@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 import { Button } from '@/components/ui/button';

@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server';
 
-import {
-  DynamoDBClient,
-  ScanCommand,
-  UpdateItemCommand
-} from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { CompleteMultipartUploadCommand, S3Client } from '@aws-sdk/client-s3';
-import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 const credentials = {
@@ -19,10 +14,9 @@ const credentials = {
 
 const s3Client = new S3Client(credentials);
 const ddbClient = new DynamoDBClient(credentials);
-const SESClient = new SESv2Client(credentials);
 
 export async function POST(request: Request) {
-  const { fileName, uploadId, id } = await request.json();
+  const { fileName, uploadId } = await request.json();
 
   try {
     // get upload parts
