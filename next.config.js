@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  server: {
+    host: '0.0.0.0', // Use '0.0.0.0' to listen on all available network interfaces
+    port: 3000 // You can also specify the port here
+  }
   // images: {
   //   domains: ['gasos-ballot-gallery-resized.s3.us-east-1.amazonaws.com']
   // },
