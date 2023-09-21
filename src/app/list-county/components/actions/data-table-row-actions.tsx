@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +19,7 @@ import { FilesDBResponseData } from '@/types';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Row } from '@tanstack/react-table';
 import axios from 'axios';
-import { FileDown, Info, UploadCloud } from 'lucide-react';
+import { FileDown, Info, UploadCloud, X, XCircle } from 'lucide-react';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -37,9 +38,28 @@ export function DataTableRowActions<TData>({
     router.push(`/upload-multipart-2?county=${data.county}`);
   };
 
+  const handleCancelUpload = () => {
+    if (window.confirm('Do you really want to cancell it?')) {
+      localStorage.setItem(`upload-fail-${data.id}`, data.uploadId);
+      router.refresh();
+    }
+  };
+
   const handleShowProgressModal = () => {
     uploadProgressModal.setUploadId(data.uploadId);
     uploadProgressModal.onOpen();
+  };
+
+  const handleDeleteUpload = async () => {
+    try {
+      if (window.confirm('Do you really want to delete this file?')) {
+        await axios.post('/api/delete-file', { id: data.id });
+        router.refresh();
+      }
+    } catch (err) {
+      toast.error('Error on remove this file');
+      console.log(err);
+    }
   };
 
   const handleDownloadFile = async () => {
@@ -89,14 +109,31 @@ export function DataTableRowActions<TData>({
             </DropdownMenuShortcut>
           </DropdownMenuItem>
         )}
-        {typeof localStorage !== 'undefined' &&
-          localStorage?.getItem(`upload-fail-${data.id}`) && (
-            <DropdownMenuItem onClick={handleUpload}>
-              Resume Upload
+        {data.status === 'uploading' &&
+          !localStorage.getItem(`upload-fail-${data.id}`) && (
+            <DropdownMenuItem onClick={handleCancelUpload}>
+              Cancel Upload
               <DropdownMenuShortcut>
-                <UploadCloud size={16} className="text-gray-500" />
+                <X size={16} className="text-gray-500" />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
+          )}
+        {typeof localStorage !== 'undefined' &&
+          localStorage?.getItem(`upload-fail-${data.id}`) && (
+            <>
+              <DropdownMenuItem onClick={handleUpload}>
+                Resume Upload
+                <DropdownMenuShortcut>
+                  <UploadCloud size={16} className="text-gray-500" />
+                </DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDeleteUpload}>
+                Delete Upload
+                <DropdownMenuShortcut>
+                  <XCircle size={16} className="text-gray-500" />
+                </DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </>
           )}
       </DropdownMenuContent>
     </DropdownMenu>
